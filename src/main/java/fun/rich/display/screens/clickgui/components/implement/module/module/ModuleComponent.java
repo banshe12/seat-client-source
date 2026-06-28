@@ -78,19 +78,19 @@ public class ModuleComponent extends AbstractComponent {
         int glowAlpha = (int) (alphaAnimation.getOutput().floatValue() / 105f * 20);
 
         blur.render(ShapeProperties.create(context.getMatrices(), x, y, width, height = getComponentHeight())
-                .round(15f)
+                .round(18f)
                 .color(new Color(0, 0, 0, 150).getRGB())
                 .build());
 
         rectangle.render(ShapeProperties.create(context.getMatrices(), x, y, width, height = getComponentHeight())
-                .round(15f)
-                .thickness(1.5f)
-                .outlineColor(new Color(138, 43, 226, 255).getRGB())
+                .round(18f)
+                .thickness(1.0f)
+                .outlineColor(new Color(138, 43, 226, 180).getRGB())
                 .color(
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB())
+                        new Color(10, 10, 10, 210).getRGB(),
+                        new Color(10, 10, 10, 210).getRGB(),
+                        new Color(10, 10, 10, 210).getRGB(),
+                        new Color(10, 10, 10, 210).getRGB())
                 .build());
 
         rectangle.render(ShapeProperties.create(context.getMatrices(), x, y + descHeight + 24, width, 0.5f)
@@ -110,8 +110,8 @@ public class ModuleComponent extends AbstractComponent {
                 .render(context, mouseX, mouseY, delta);
 
         if (glowAlpha > 0) {
-            rectangle.render(ShapeProperties.create(context.getMatrices(), x + 11, y + nameY - 1, Fonts.getSize(15, DEFAULT).getStringWidth(point + module.getVisibleName()), 8)
-                    .round(4).softness(4).color(new Color(138, 43, 226, glowAlpha).getRGB()).build());
+            rectangle.render(ShapeProperties.create(context.getMatrices(), x + 1, y + 1, width - 2, height - 2)
+                    .round(17f).softness(6).color(new Color(138, 43, 226, (int)(glowAlpha * 1.5f)).getRGB()).build());
         }
 
         Fonts.getSize(15, DEFAULT).drawString(context.getMatrices(), point + module.getVisibleName(), x + 11, y + nameY - 1f, new Color(255, 255, 255, alphaOffset).getRGB());

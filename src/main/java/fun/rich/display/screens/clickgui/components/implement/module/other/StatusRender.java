@@ -65,7 +65,7 @@ public class StatusRender extends AbstractComponent {
                 .build());
         rectangle.render(ShapeProperties.create(matrix, x, y, 18, 9)
                 .round(4.5f).thickness(0).softness(1)
-                .color(Calculate.applyOpacity(stateColor, opacity))
+                .color(new Color(138, 43, 226, opacity).getRGB(), new Color(0, 191, 255, opacity).getRGB(), new Color(0, 191, 255, opacity).getRGB(), new Color(138, 43, 226, opacity).getRGB())
                 .build());
         rectangle.render(ShapeProperties.create(matrix, sliderX - 1f, y - 1f, 11, 11)
                 .round(5.5f).thickness(1.0f).softness(1)

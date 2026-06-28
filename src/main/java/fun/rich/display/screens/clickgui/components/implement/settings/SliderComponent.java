@@ -81,7 +81,8 @@ public class SliderComponent extends AbstractSettingComponent {
                 .color(new Color(25, 25, 25, 150).getRGB()).build());
 
         rectangle.render(ShapeProperties.create(matrix, x + width - SLIDER_WIDTH - 9, y + 14.5f, (float) animation, 4).round(2)
-                .color(new Color(138, 43, 226, 200).getRGB()).build());
+                .color(new Color(138, 43, 226, 255).getRGB(), new Color(0, 191, 255, 255).getRGB(), new Color(0, 191, 255, 255).getRGB(), new Color(138, 43, 226, 255).getRGB())
+                .build());
 
         float v = MathHelper.clamp((float) (x + width - SLIDER_WIDTH + animation), 0, x + width - 4);
         rectangle.render(ShapeProperties.create(matrix, v - 11f, y + 12.5F, 8, 8)

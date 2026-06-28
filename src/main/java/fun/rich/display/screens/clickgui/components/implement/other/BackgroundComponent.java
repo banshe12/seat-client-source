@@ -72,14 +72,14 @@ public class BackgroundComponent extends AbstractComponent {
         DiscordManager discord = Rich.getInstance().getDiscordManager();
         Rich.getInstance().getScissorManager().push(matrix.peek().getPositionMatrix(), 0, 0, window.getScaledWidth(), window.getScaledHeight());
 
-        blur.render(ShapeProperties.create(matrix, x, y, width, height).round(15f).quality(64)
+        blur.render(ShapeProperties.create(matrix, x, y, width, height).round(18f).quality(64)
                 .color(new Color(0, 0, 0, 150).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(15f)
-                .thickness(1.5f)
-                .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                .color(new Color(15, 15, 15, 180).getRGB())
+        rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(18f)
+                .thickness(1.0f)
+                .outlineColor(new Color(138, 43, 226, 180).getRGB())
+                .color(new Color(10, 10, 10, 210).getRGB())
                 .build());
 
         // Header accent

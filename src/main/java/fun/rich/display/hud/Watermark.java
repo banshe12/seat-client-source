@@ -63,19 +63,21 @@ public class Watermark extends AbstractDraggable {
         setWidth((int) totalWidth);
 
         blur.render(ShapeProperties.create(matrix, getX(), getY(), getWidth(), getHeight() + 4)
-                .round(10f).quality(12)
+                .round(12f).quality(12)
                 .color(new Color(0, 0, 0, 150).getRGB())
                 .build());
 
         rectangle.render(ShapeProperties.create(matrix, getX(), getY(), getWidth(), getHeight() + 4)
-                .round(10f)
-                .thickness(1.5f)
-                .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                .color(
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB())
+                .round(12f)
+                .thickness(1.0f)
+                .outlineColor(new Color(138, 43, 226, 120).getRGB())
+                .color(new Color(10, 10, 10, 210).getRGB())
+                .build());
+
+        // Top bar gradient
+        rectangle.render(ShapeProperties.create(matrix, getX() + 4, getY() + 1, getWidth() - 8, 1.5f)
+                .round(1f)
+                .color(new Color(138, 43, 226, 255).getRGB(), new Color(0, 191, 255, 255).getRGB(), new Color(0, 191, 255, 255).getRGB(), new Color(138, 43, 226, 255).getRGB())
                 .build());
 
         float currentX = getX() + 10f;

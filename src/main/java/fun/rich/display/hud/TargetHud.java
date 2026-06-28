@@ -99,39 +99,43 @@ public class TargetHud extends AbstractDraggable {
         setHeight(60);
 
         // Main background
-        blur.render(ShapeProperties.create(matrix, getX(), getY(), getWidth(), 40)
-                .round(15).quality(12)
+        blur.render(ShapeProperties.create(matrix, getX(), getY(), getWidth(), 42)
+                .round(18f).quality(12)
                 .color(new Color(0, 0, 0, 150).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(matrix, getX(), getY(), getWidth(), 40)
-                .round(15)
-                .thickness(1.5f)
-                .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                .color(new Color(15, 15, 15, 180).getRGB())
+        rectangle.render(ShapeProperties.create(matrix, getX(), getY(), getWidth(), 42)
+                .round(18f)
+                .thickness(1.0f)
+                .outlineColor(new Color(138, 43, 226, 120).getRGB())
+                .color(new Color(10, 10, 10, 210).getRGB())
                 .build());
 
         // Name and distance
-        font.drawString(matrix, lastTarget.getName().getString(), getX() + 45, getY() + 10f, ColorAssist.getText());
-        distancefont.drawString(matrix, "Distance: " + distanceText, getX() + 45, getY() + 22f, new Color(225, 225, 255, 255).getRGB());
+        font.drawString(matrix, lastTarget.getName().getString(), getX() + 45, getY() + 8f, ColorAssist.getText());
+        distancefont.drawString(matrix, "Distance: " + distanceText, getX() + 45, getY() + 18f, new Color(225, 225, 255, 180).getRGB());
 
-        // Health Circle
-        float arcSize = 28;
-        float arcX = getX() + getWidth() - arcSize - 8;
-        float arcY = getY() + 6;
+        // Health Bar (Premium Style)
+        float barWidth = getWidth() - 53;
+        float barX = getX() + 45;
+        float barY = getY() + 30;
 
-        arc.render(ShapeProperties.create(matrix, arcX, arcY, arcSize, arcSize).round(0.26F).thickness(0.30f).end(361)
-                .color(new Color(255, 255, 255, 25).getRGB()).build());
-        arc.render(ShapeProperties.create(matrix, arcX, arcY, arcSize, arcSize).round(0.26F).thickness(0.30f).end(health)
-                .color(new Color(255, 127, 80, 255).getRGB(), new Color(255, 127, 80, 255).getRGB(), new Color(255, 127, 80, 255).getRGB(), new Color(255, 127, 80, 255).getRGB()).build());
+        rectangle.render(ShapeProperties.create(matrix, barX, barY, barWidth, 4).round(2)
+                .color(new Color(25, 25, 25, 150).getRGB()).build());
 
+        rectangle.render(ShapeProperties.create(matrix, barX, barY, (health / 360f) * barWidth, 4).round(2)
+                .color(new Color(138, 43, 226, 255).getRGB(), new Color(0, 191, 255, 255).getRGB(), new Color(0, 191, 255, 255).getRGB(), new Color(138, 43, 226, 255).getRGB()).build());
+
+        // Absorption Status Circle
         if (absorption > 0 && !Network.isFunTime()) {
-            arc.render(ShapeProperties.create(matrix, arcX, arcY, arcSize, arcSize).round(0.26F).thickness(0.30f)
-                    .end(absorption)
+            float arcSize = 14;
+            float arcX = getX() + getWidth() - arcSize - 10;
+            float arcY = getY() + 8;
+            arc.render(ShapeProperties.create(matrix, arcX, arcY, arcSize, arcSize).round(0.26F).thickness(0.30f).end(absorption)
                     .color(new Color(255, 215, 0, 255).getRGB()).build());
         }
 
-        Fonts.getSize(12, Fonts.Type.BOLD).drawCenteredString(matrix, stringHp, arcX + arcSize / 2f, arcY + arcSize / 2f + 1, new Color(255, 255, 255, 225).getRGB());
+        Fonts.getSize(11, Fonts.Type.BOLD).drawString(matrix, stringHp, getX() + getWidth() - 30, getY() + 20, new Color(255, 255, 255, 225).getRGB());
     }
 
     private void drawArmor(DrawContext context, MatrixStack matrix) {
@@ -213,7 +217,7 @@ public class TargetHud extends AbstractDraggable {
 
         // Round head logic would be complex with standard drawTexture, so we use a rounded background behind it
         rectangle.render(ShapeProperties.create(context.getMatrices(), faceX - 1, faceY - 1, faceSize + 2, faceSize + 2)
-                .round(8).color(new Color(138, 43, 226, 255).getRGB()).build());
+                .round(8).color(new Color(138, 43, 226, 120).getRGB()).build());
 
         Calculate.setAlpha(alpha, () -> {
             Render2D.drawTexture(context, textureLocation, faceX, faceY, faceSize, 8, 8, 8, 64, ColorAssist.getRect(1), ColorAssist.multRed(-1, 1 + lastTarget.hurtTime / 4F));

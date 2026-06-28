@@ -30,12 +30,12 @@ public class CategoryContainerComponent extends AbstractComponent {
         float offset = 0;
 
         for (CategoryComponent component : categoryComponents) {
-            component.x = x + 6;
-            component.y = y + 40 + offset;
-            component.width = 73;
-            component.height = 17;
+            component.x = x + 8;
+            component.y = y + 45 + offset;
+            component.width = 28;
+            component.height = 20;
             component.render(context, mouseX, mouseY, delta);
-            offset += component.height + 12;
+            offset += component.height + 10;
         }
     }
 
