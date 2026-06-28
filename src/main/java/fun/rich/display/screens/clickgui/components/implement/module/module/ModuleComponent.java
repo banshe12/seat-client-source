@@ -13,7 +13,7 @@ import fun.rich.utils.display.shape.ShapeProperties;
 import fun.rich.utils.display.shape.implement.Rectangle;
 import fun.rich.display.screens.clickgui.MenuScreen;
 import fun.rich.display.screens.clickgui.components.AbstractComponent;
-import fun.rich.display.screens.clickgui.components.implement.other.StatusRender;
+import fun.rich.display.screens.clickgui.components.implement.module.other.StatusRender;
 import fun.rich.display.screens.clickgui.components.implement.settings.AbstractSettingComponent;
 import fun.rich.utils.math.calc.Calculate;
 import fun.rich.utils.client.chat.StringHelper;
@@ -50,7 +50,7 @@ public class ModuleComponent extends AbstractComponent {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         boolean noSettings = module.settings().isEmpty();
         float headerHeight = noSettings ? 18 : 18;
-        float nameY = noSettings ? 9.5F : 8;
+        float nameY = 8.5f;
         java.lang.String point = "• ";
         java.lang.String description = fun.rich.display.screens.clickgui.components.implement.module.ModuleDescriptions.getDescription(module);
         float maxWidth = width - 25;
@@ -75,38 +75,44 @@ public class ModuleComponent extends AbstractComponent {
         alphaAnimation.setDirection(module.isState() ? FORWARDS : BACKWARDS);
         int brightnessOffset = colorAnimation.getOutput().intValue();
         int alphaOffset = 150 + alphaAnimation.getOutput().intValue();
+        int glowAlpha = (int) (alphaAnimation.getOutput().floatValue() / 105f * 20);
 
         blur.render(ShapeProperties.create(context.getMatrices(), x, y, width, height = getComponentHeight())
-                .round(10)
+                .round(18f)
                 .color(new Color(0, 0, 0, 150).getRGB())
                 .build());
 
         rectangle.render(ShapeProperties.create(context.getMatrices(), x, y, width, height = getComponentHeight())
-                .round(10)
-                .thickness(1.5f)
-                .outlineColor(new Color(138, 43, 226, 255).getRGB())
+                .round(18f)
+                .thickness(1.0f)
+                .outlineColor(new Color(138, 43, 226, 180).getRGB())
                 .color(
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB())
+                        new Color(10, 10, 10, 210).getRGB(),
+                        new Color(10, 10, 10, 210).getRGB(),
+                        new Color(10, 10, 10, 210).getRGB(),
+                        new Color(10, 10, 10, 210).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(context.getMatrices(), x, y + descHeight + 25, width, 1)
+        rectangle.render(ShapeProperties.create(context.getMatrices(), x, y + descHeight + 24, width, 0.5f)
                 .color(new Color(138, 43, 226, 155).getRGB(), new Color(138, 43, 226, 55).getRGB(), new Color(138, 43, 226, 55).getRGB(), new Color(138, 43, 226, 155).getRGB())
                 .build());
 
         if (!module.settings().isEmpty()) {
-            Fonts.getSize(18, GUIICONS).drawString(context.getMatrices(), "A", x + 7, y + descHeight + 6F + 27f, new Color(225, 225, 255, 255).getRGB());
-            Fonts.getSize(16, GUIICONS).drawString(context.getMatrices(), "B", x + 20, y + descHeight + 6F + 27.5f, new Color(225, 225, 255, 255).getRGB());
+            Fonts.getSize(18, GUIICONS).drawString(context.getMatrices(), "A", x + 7, y + descHeight + 6F + 26f, new Color(225, 225, 255, 255).getRGB());
+            Fonts.getSize(16, GUIICONS).drawString(context.getMatrices(), "B", x + 20, y + descHeight + 6F + 26.5f, new Color(225, 225, 255, 255).getRGB());
         } else {
-            Fonts.getSize(18, GUIICONS).drawString(context.getMatrices(), "A", x + 7, y + descHeight + 6F + 27f, new Color(225, 225, 255, 255).getRGB());
+            Fonts.getSize(18, GUIICONS).drawString(context.getMatrices(), "A", x + 7, y + descHeight + 6F + 26f, new Color(225, 225, 255, 255).getRGB());
         }
 
-        statusRender.position(x + width - 16, y + descHeight + 5.5F + 25.5f)
+        statusRender.position(x + width - 16, y + descHeight + 5.5F + 24.5f)
                 .setRunnable(module::switchState)
                 .setState(module.isState())
                 .render(context, mouseX, mouseY, delta);
+
+        if (glowAlpha > 0) {
+            rectangle.render(ShapeProperties.create(context.getMatrices(), x + 1, y + 1, width - 2, height - 2)
+                    .round(17f).softness(6).color(new Color(138, 43, 226, (int)(glowAlpha * 1.5f)).getRGB()).build());
+        }
 
         Fonts.getSize(15, DEFAULT).drawString(context.getMatrices(), point + module.getVisibleName(), x + 11, y + nameY - 1f, new Color(255, 255, 255, alphaOffset).getRGB());
 
@@ -174,7 +180,7 @@ public class ModuleComponent extends AbstractComponent {
         float descHeight = lineCount == 1 ? lineCount * Fonts.getSize(12, DEFAULT).getStringHeight(" ") - 13 : lineCount * Fonts.getSize(12, DEFAULT).getStringHeight(" ") - 20;
         float stringWidth = module.getKey() < 0 ? 10 : Fonts.getSize(12, DEFAULT).getStringWidth(bindName);
         float bindX = module.settings().isEmpty() ? x + width - 37.5f - stringWidth : x + width - 37.5f - stringWidth;
-        float bindY = module.settings().isEmpty() ? y + descHeight + 5.5F + 27 : y + descHeight + 5.5F + 27;
+        float bindY = y + descHeight + 5.5F + 26;
 
         if (Calculate.isHovered(mouseX, mouseY, bindX, bindY, stringWidth + 6, 9) && button == 0) {
             binding = !binding;
@@ -251,25 +257,21 @@ public class ModuleComponent extends AbstractComponent {
         java.lang.String name = binding ? "..." : bindName;
         float stringWidth = module.getKey() < 0 && !binding ? 10 : Fonts.getSize(12, DEFAULT).getStringWidth(name);
         float bindX = module.settings().isEmpty() ? x + width - 37.5f - stringWidth : x + width - 37.5f - stringWidth;
-        float back = module.settings().isEmpty() ? y + descHeight + 6F + 23.75f : y + descHeight + 6F + 23.75f;
+        float back = y + descHeight + 6F + 22.75f;
 
         rectangle.render(ShapeProperties.create(context.getMatrices(), bindX + 0.25f, back, stringWidth + 6, 10)
                 .round(3f)
-                .thickness(1.5f)
-                .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                .color(
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB())
+                .thickness(1.0f)
+                .outlineColor(new Color(138, 43, 226, 200).getRGB())
+                .color(new Color(15, 15, 15, 180).getRGB())
                 .build());
 
         int bindingColor = ColorHelper.getArgb(255, 225, 225, 255);
-        float textX = module.settings().isEmpty() ? x + width - 34.5f - stringWidth : x + width - 34.5f - stringWidth;
-        float textY = module.settings().isEmpty() ? y + descHeight + 6F + 28f : y + descHeight + 6F + 28f;
+        float textX = x + width - 34.5f - stringWidth;
+        float textY = y + descHeight + 6F + 27f;
 
         if (module.getKey() < 0 && !binding) {
-            Fonts.getSize(22, GUIICONS).drawString(context.getMatrices(), "G", x + width - 34.5f - 10, y + descHeight + 6F + 26f, new Color(225, 225, 255, 255).getRGB());
+            Fonts.getSize(22, GUIICONS).drawString(context.getMatrices(), "G", x + width - 34.5f - 10, y + descHeight + 6F + 25f, new Color(225, 225, 255, 255).getRGB());
         } else {
             Fonts.getSize(12, DEFAULT).drawString(context.getMatrices(), name, textX, textY, bindingColor);
         }

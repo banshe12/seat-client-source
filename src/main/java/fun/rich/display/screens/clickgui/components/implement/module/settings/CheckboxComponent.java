@@ -5,7 +5,7 @@ import net.minecraft.client.gui.DrawContext;
 
 import fun.rich.features.module.setting.implement.BooleanSetting;
 import fun.rich.utils.display.font.Fonts;
-import fun.rich.display.screens.clickgui.components.implement.other.CheckComponent;
+import fun.rich.display.screens.clickgui.components.implement.module.other.CheckComponent;
 
 import java.awt.*;
 

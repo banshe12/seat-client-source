@@ -72,18 +72,20 @@ public class BackgroundComponent extends AbstractComponent {
         DiscordManager discord = Rich.getInstance().getDiscordManager();
         Rich.getInstance().getScissorManager().push(matrix.peek().getPositionMatrix(), 0, 0, window.getScaledWidth(), window.getScaledHeight());
 
-        blur.render(ShapeProperties.create(matrix, x, y, width, height).round(10).quality(12)
+        blur.render(ShapeProperties.create(matrix, x, y, width, height).round(15f).quality(64)
                 .color(new Color(0, 0, 0, 150).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(10)
+        rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(15f)
                 .thickness(1.5f)
                 .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                .color(
-                new Color(15, 15, 15, 180).getRGB(),
-                new Color(15, 15, 15, 180).getRGB(),
-                new Color(15, 15, 15, 180).getRGB(),
-                new Color(15, 15, 15, 180).getRGB())
+                .color(new Color(15, 15, 15, 180).getRGB())
+                .build());
+
+        // Header accent
+        rectangle.render(ShapeProperties.create(matrix, x + 1, y + 1, width - 2, 28)
+                .round(14, 14, 0, 0)
+                .color(new Color(138, 43, 226, 30).getRGB())
                 .build());
 
         List<Map<String, Object>> displayedConfigs = new ArrayList<>();
@@ -104,47 +106,39 @@ public class BackgroundComponent extends AbstractComponent {
                 configsAlpha = Calculate.interpolate(configsAlpha, 1f, 0.1f);
             }
             rectangle.render(ShapeProperties.create(context.getMatrices(), x + 55F, y + 38, 70, 15)
-                    .round(3).thickness(2).softness(1).outlineColor(new Color(54, 54, 56, 255).getRGB()).color(
-                            new Color(31, 27, 35, 75).getRGB(), new Color(31, 27, 35, 75).getRGB(), new Color(31, 27, 35, 75).getRGB(), new Color(31, 27, 35, 75).getRGB()).build());
+                    .round(5).thickness(1f).softness(1).outlineColor(new Color(138, 43, 226, 255).getRGB()).color(
+                            new Color(25, 25, 25, 150).getRGB()).build());
             float targetX = isDefaultTab ? 55f : 90f;
             highlightX = Calculate.interpolate(highlightX, targetX, 0.2f);
             rectangle.render(ShapeProperties.create(context.getMatrices(), x + highlightX, y + 38, 35, 15)
-                    .round(3).thickness(0).softness(0).outlineColor(new Color(54, 54, 56, 0).getRGB()).color(
-                            new Color(65, 65, 65, 255).getRGB(), new Color(65, 65, 65, 255).getRGB(), new Color(65, 65, 65, 255).getRGB(), new Color(65, 65, 65, 255).getRGB()).build());
+                    .round(5).thickness(0).softness(0).color(
+                            new Color(138, 43, 226, 200).getRGB()).build());
             rectangle.render(ShapeProperties.create(context.getMatrices(), x + 43F, y + 60, width - 43F, 0.5F)
-                    .color(new Color(55, 55, 70, 250).getRGB(), new Color(55, 55, 70, 15).getRGB(), new Color(55, 55, 70, 250).getRGB(), new Color(55, 55, 70, 15).getRGB()).build());
+                    .color(new Color(138, 43, 226, 155).getRGB(), new Color(138, 43, 226, 55).getRGB(), new Color(138, 43, 226, 55).getRGB(), new Color(138, 43, 226, 155).getRGB()).build());
             Fonts.getSize(16, Fonts.Type.DEFAULT).drawString(matrix, "Default", x + 60F, y + 43, ColorAssist.getText(0.7f));
             Fonts.getSize(16, Fonts.Type.DEFAULT).drawString(matrix, "Cloud", x + 97F, y + 43, ColorAssist.getText(0.7f));
             blur.render(ShapeProperties.create(context.getMatrices(), x + 340F, y + 38, 80, 15)
-                    .round(3).quality(12)
+                    .round(5).quality(64)
                     .color(new Color(0, 0, 0, 150).getRGB())
                     .build());
 
             rectangle.render(ShapeProperties.create(context.getMatrices(), x + 340F, y + 38, 80, 15)
-                    .round(3)
-                    .thickness(1.5f)
-                    .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                    .color(
-                            new Color(15, 15, 15, 180).getRGB(),
-                            new Color(15, 15, 15, 180).getRGB(),
-                            new Color(15, 15, 15, 180).getRGB(),
-                            new Color(15, 15, 15, 180).getRGB())
+                    .round(5)
+                    .thickness(1.0f)
+                    .outlineColor(new Color(138, 43, 226, 200).getRGB())
+                    .color(new Color(15, 15, 15, 180).getRGB())
                     .build());
 
             blur.render(ShapeProperties.create(context.getMatrices(), x + 292F, y + 38, 40, 15)
-                    .round(3).quality(12)
+                    .round(5).quality(64)
                     .color(new Color(0, 0, 0, 150).getRGB())
                     .build());
 
             rectangle.render(ShapeProperties.create(context.getMatrices(), x + 292F, y + 38, 40, 15)
-                    .round(3)
-                    .thickness(1.5f)
-                    .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                    .color(
-                            new Color(15, 15, 15, 180).getRGB(),
-                            new Color(15, 15, 15, 180).getRGB(),
-                            new Color(15, 15, 15, 180).getRGB(),
-                            new Color(15, 15, 15, 180).getRGB())
+                    .round(5)
+                    .thickness(1.0f)
+                    .outlineColor(new Color(138, 43, 226, 200).getRGB())
+                    .color(new Color(15, 15, 15, 180).getRGB())
                     .build());
 
             rectangle.render(ShapeProperties.create(matrix, x + 405F, y + 42, 0.5f, 7)
@@ -157,19 +151,15 @@ public class BackgroundComponent extends AbstractComponent {
                     Fonts.getSize(16, Fonts.Type.REGULAR).drawString(matrix, "Save", x + 307F, y + 43.5f, ColorAssist.getText(1f));
 
             blur.render(ShapeProperties.create(context.getMatrices(), x + 250F, y + 38, 38, 15)
-                    .round(3).quality(12)
-                    .color(new Color(0, 0, 0, 150).getRGB())
+                    .round(3).quality(64)
+                    .color(new Color(0, 0, 0, 200).getRGB())
                     .build());
 
             rectangle.render(ShapeProperties.create(context.getMatrices(), x + 250F, y + 38, 38, 15)
-                    .round(3)
-                    .thickness(1.5f)
-                    .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                    .color(
-                            new Color(15, 15, 15, 180).getRGB(),
-                            new Color(15, 15, 15, 180).getRGB(),
-                            new Color(15, 15, 15, 180).getRGB(),
-                            new Color(15, 15, 15, 180).getRGB())
+                    .round(5)
+                    .thickness(1.0f)
+                    .outlineColor(new Color(138, 43, 226, 200).getRGB())
+                    .color(new Color(15, 15, 15, 180).getRGB())
                     .build());   Fonts.getSize(21, Fonts.Type.GUIICONS).drawString(matrix, "O", x + 253F, y + 43, ColorAssist.getText(1f));
 
             Fonts.getSize(16, Fonts.Type.REGULAR).drawString(matrix, "Clear", x + 263F, y + 43.5f, ColorAssist.getText(1f));
@@ -215,7 +205,7 @@ public class BackgroundComponent extends AbstractComponent {
                 if (configY + 50 > y + 60 && configY < y + height) {
 
                     blur.render(ShapeProperties.create(matrix, configX, configY, 180, 50)
-                            .round(10).quality(12)
+                            .round(10).quality(64)
                             .color(new Color(0, 0, 0, 150).getRGB())
                             .build());
 
@@ -231,10 +221,10 @@ public class BackgroundComponent extends AbstractComponent {
                             .build());
 
                    rectangle.render(ShapeProperties.create(context.getMatrices(), configX, configY + 22, 180, 0.5F)
-                            .color(new Color(55, 55, 70, 250).getRGB(), new Color(55, 55, 70, 15).getRGB(), new Color(55, 55, 70, 250).getRGB(), new Color(55, 55, 70, 15).getRGB()).build());
+                            .color(new Color(138, 43, 226, 155).getRGB(), new Color(138, 43, 226, 55).getRGB(), new Color(138, 43, 226, 55).getRGB(), new Color(138, 43, 226, 155).getRGB()).build());
                     rectangle.render(ShapeProperties.create(context.getMatrices(), configX, configY, 20.5f, 19)
-                            .round(1, 7, 4, 1).thickness(2).softness(1).outlineColor(new Color(54, 54, 56, 255).getRGB()).color(
-                                    new Color(55, 55, 55, 255).getRGB(), new Color(55, 55, 55, 255).getRGB(), new Color(55, 55, 55, 255).getRGB(), new Color(55, 55, 55, 255).getRGB()).build());
+                            .round(1, 7, 4, 1).thickness(1.5f).softness(1).outlineColor(new Color(138, 43, 226, 255).getRGB()).color(
+                                    new Color(25, 25, 25, 255).getRGB()).build());
                     Fonts.getSize(26, Fonts.Type.ICONSCATEGORY).drawString(matrix, "F", configX + 3.5F, configY + 5, ColorAssist.getText());
                     String displayName = config;
                     if (config.equals(editingConfig)) {
@@ -273,67 +263,51 @@ public class BackgroundComponent extends AbstractComponent {
                     Render2D.drawTexture(context, Identifier.of(avatarHash), configX + 157F, configY + 3, 16, 7.5f, 0, 15, 21, ColorAssist.getGuiRectColor(1));
 
                     blur.render(ShapeProperties.create(context.getMatrices(), configX + 162F, configY + 35, 14, 15)
-                            .round(3, 0, 3, 0).quality(12)
+                            .round(4).quality(64)
                             .color(new Color(0, 0, 0, 150).getRGB())
                             .build());
 
                     rectangle.render(ShapeProperties.create(context.getMatrices(), configX + 162F, configY + 35, 14, 15)
-                            .round(3, 0, 3, 0)
-                            .thickness(1.5f)
-                            .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                            .color(
-                                    new Color(15, 15, 15, 180).getRGB(),
-                                    new Color(15, 15, 15, 180).getRGB(),
-                                    new Color(15, 15, 15, 180).getRGB(),
-                                    new Color(15, 15, 15, 180).getRGB())
+                            .round(4)
+                            .thickness(1.0f)
+                            .outlineColor(new Color(138, 43, 226, 200).getRGB())
+                            .color(new Color(25, 25, 25, 180).getRGB())
                             .build());
 
                     blur.render(ShapeProperties.create(context.getMatrices(), configX + 146F, configY + 35, 14, 15)
-                            .round(3, 0, 3, 0).quality(12)
+                            .round(4).quality(64)
                             .color(new Color(0, 0, 0, 150).getRGB())
                             .build());
 
                     rectangle.render(ShapeProperties.create(context.getMatrices(), configX + 146F, configY + 35, 14, 15)
-                            .round(3, 0, 3, 0)
-                            .thickness(1.5f)
-                            .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                            .color(
-                                    new Color(15, 15, 15, 180).getRGB(),
-                                    new Color(15, 15, 15, 180).getRGB(),
-                                    new Color(15, 15, 15, 180).getRGB(),
-                                    new Color(15, 15, 15, 180).getRGB())
+                            .round(4)
+                            .thickness(1.0f)
+                            .outlineColor(new Color(138, 43, 226, 200).getRGB())
+                            .color(new Color(25, 25, 25, 180).getRGB())
                             .build());
 
                     blur.render(ShapeProperties.create(context.getMatrices(), configX + 130.25F, configY + 35, 14, 15)
-                            .round(3, 0, 3, 0).quality(12)
+                            .round(4).quality(64)
                             .color(new Color(0, 0, 0, 150).getRGB())
                             .build());
 
                     rectangle.render(ShapeProperties.create(context.getMatrices(), configX + 130.25F, configY + 35, 14, 15)
-                            .round(3, 0, 3, 0)
-                            .thickness(1.5f)
-                            .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                            .color(
-                                    new Color(15, 15, 15, 180).getRGB(),
-                                    new Color(15, 15, 15, 180).getRGB(),
-                                    new Color(15, 15, 15, 180).getRGB(),
-                                    new Color(15, 15, 15, 180).getRGB())
+                            .round(4)
+                            .thickness(1.0f)
+                            .outlineColor(new Color(138, 43, 226, 200).getRGB())
+                            .color(new Color(25, 25, 25, 180).getRGB())
                             .build());
 
                     blur.render(ShapeProperties.create(context.getMatrices(), configX + 114.35F, configY + 35, 14, 15)
-                            .round(3, 0, 3, 0).quality(12)
+                            .round(4).quality(64)
                             .color(new Color(0, 0, 0, 150).getRGB())
                             .build());
 
                     rectangle.render(ShapeProperties.create(context.getMatrices(), configX + 114.35F, configY + 35, 14, 15)
-                            .round(3, 0, 3, 0)
-                            .thickness(1.5f)
-                            .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                            .color(
-                                    new Color(15, 15, 15, 180).getRGB(),
-                                    new Color(15, 15, 15, 180).getRGB(),
-                                    new Color(15, 15, 15, 180).getRGB(),
-                                    new Color(15, 15, 15, 180).getRGB())
+                            .round(4)
+                            .thickness(1.0f)
+                            .outlineColor(new Color(138, 43, 226, 200).getRGB())
+                            .color(new Color(25, 25, 25, 180).getRGB())
                             .build());
 
                     Fonts.getSize(31, Fonts.Type.GUIICONS).drawString(matrix, "P", configX + 164F, configY + 36f, ColorAssist.getText(1f));
@@ -364,27 +338,12 @@ public class BackgroundComponent extends AbstractComponent {
             loadedConfigs = false;
         }
         rectangle.render(ShapeProperties.create(context.getMatrices(), x + 42.5f, y, 0.5F, height)
-                .color(new Color(55, 55, 70, 15).getRGB(), new Color(55, 55, 70, 50).getRGB(), new Color(55, 55, 70, 15).getRGB(), new Color(55, 55, 70, 250).getRGB()).build());
+                .color(new Color(138, 43, 226, 15).getRGB(), new Color(138, 43, 226, 50).getRGB(), new Color(138, 43, 226, 15).getRGB(), new Color(138, 43, 226, 250).getRGB()).build());
 
         rectangle.render(ShapeProperties.create(context.getMatrices(), x + 43F, y + 28, width - 43F, 0.5F)
-                .color(new Color(55, 55, 70, 250).getRGB(), new Color(55, 55, 70, 15).getRGB(), new Color(55, 55, 70, 250).getRGB(), new Color(55, 55, 70, 15).getRGB()).build());
+                .color(new Color(138, 43, 226, 250).getRGB(), new Color(138, 43, 226, 15).getRGB(), new Color(138, 43, 226, 250).getRGB(), new Color(138, 43, 226, 15).getRGB()).build());
 
-        blur.render(ShapeProperties.create(matrix, x + 10.5f, y + 10f, 20, 20).round(10).quality(12)
-                .color(new Color(0, 0, 0, 150).getRGB())
-                .build());
-
-        rectangle.render(ShapeProperties.create(matrix, x + 10.5f, y + 10f, 20, 20).round(10)
-                .thickness(1.5f)
-                .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                .color(
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB())
-                .build());
-
-
-        Fonts.getSize(26, Fonts.Type.ICONS).drawString(matrix, "A ", x + 14f, y + 15F, new Color(225, 225, 255, 255).getRGB());
+        // Removed the "A" logo as requested (referred to as "r")
 
         String icon;
         switch (MenuScreen.INSTANCE.getCategory()) {

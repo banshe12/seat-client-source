@@ -49,7 +49,7 @@ public class TextComponent extends AbstractSettingComponent {
         this.rectHeight = 12.0F;
 
         rectangle.render(ShapeProperties.create(matrix, rectX, rectY, rectWidth, rectHeight)
-                .round(2).thickness(2).outlineColor(ColorAssist.getOutline()).color(ColorAssist.getGuiRectColor(1)).build());
+                .round(4).thickness(1.0f).outlineColor(new Color(138, 43, 226, 150).getRGB()).color(new Color(25, 25, 25, 150).getRGB()).build());
 
         Fonts.getSize(14, Fonts.Type.BOLD).drawString(context.getMatrices(), setting.getName(), x + 9, y + 6, 0xFFD4D6E1);
         font.drawString(context.getMatrices(), wrapped, x + 9, y + 15, 0xFF878894);

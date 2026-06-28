@@ -42,7 +42,7 @@ public class TargetHud extends AbstractDraggable {
     private float displayedDistance;
 
     public TargetHud() {
-        super("Target Hud", 10, 80, 100, 36, true);
+        super("Target Hud", 10, 80, 150, 60, true);
     }
 
     @Override
@@ -80,118 +80,100 @@ public class TargetHud extends AbstractDraggable {
     }
 
     private void drawMain(DrawContext context, MatrixStack matrix) {
-
         FontRenderer font = Fonts.getSize(18, Fonts.Type.REGULAR);
         FontRenderer distancefont = Fonts.getSize(12, Fonts.Type.SEMI);
         float hp = PlayerInteractionHelper.getHealth(lastTarget);
-        String stringHp = (lastTarget.isInvisible() && !Network.isSpookyTime() && !Network.isCopyTime()) ? " ??" : PlayerInteractionHelper.getHealthString(hp);
+        String stringHp = (lastTarget.isInvisible() && !Network.isSpookyTime() && !Network.isCopyTime()) ? "??" : PlayerInteractionHelper.getHealthString(hp);
         health = MathHelper.clamp(Calculate.interpolateSmooth(1, health, hp / lastTarget.getMaxHealth() * 360), 0, 360);
         float absorptionAmount = lastTarget.getAbsorptionAmount();
         absorption = MathHelper.clamp(Calculate.interpolateSmooth(1, absorption, absorptionAmount / 20.0F * 360), 0, 360);
         float actualDistance = mc.player.distanceTo(lastTarget);
-        float roundedDistance = Math.round(actualDistance * 2) / 2.0f;
+        float roundedDistance = Math.round(actualDistance * 10) / 10.0f;
         if (distanceUpdateTimer.finished(10)) {
             displayedDistance = MathHelper.clamp(Calculate.interpolateSmooth(0.5f, displayedDistance, roundedDistance), 0, 100);
             distanceUpdateTimer.reset();
         }
         String distanceText = String.format("%.1f", displayedDistance);
 
-        float nameWidth = font.getStringWidth(lastTarget.getName().getString());
-        float baseWidth = Math.max(34 + 36 + 10, 100);
-        setWidth((int) baseWidth + 10);
-        setHeight((int) 41);
+        setWidth(150);
+        setHeight(60);
 
-
-        blur.render(ShapeProperties.create(matrix, getX(), getY(), getWidth(), getHeight() - 10)
-                .round(10).quality(12)
+        // Main background
+        blur.render(ShapeProperties.create(matrix, getX(), getY(), getWidth(), 42)
+                .round(18f).quality(12)
                 .color(new Color(0, 0, 0, 150).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(matrix, getX(), getY(), getWidth(), getHeight() - 10)
-                .round(10)
-                .thickness(1.5f)
-                .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                .color(
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB())
+        rectangle.render(ShapeProperties.create(matrix, getX(), getY(), getWidth(), 42)
+                .round(18f)
+                .thickness(1.0f)
+                .outlineColor(new Color(138, 43, 226, 120).getRGB())
+                .color(new Color(10, 10, 10, 210).getRGB())
                 .build());
 
+        // Name and distance
+        font.drawString(matrix, lastTarget.getName().getString(), getX() + 45, getY() + 8f, ColorAssist.getText());
+        distancefont.drawString(matrix, "Distance: " + distanceText, getX() + 45, getY() + 18f, new Color(225, 225, 255, 180).getRGB());
 
-        arc.render(ShapeProperties.create(matrix, getX() + getWidth() - 28.5f, getY() + 2.5f, 26, 26).round(0.26F).thickness(0.30f).end(361)
-                .color(new Color(255,255,255,25).getRGB()).build());
-        arc.render(ShapeProperties.create(matrix, getX() + getWidth() - 28.5f, getY() + 2.5f, 26, 26).round(0.26F).thickness(0.30f).end(health)
-                .color(ColorAssist.fade(0), ColorAssist.fade(200), ColorAssist.fade(0), ColorAssist.fade(200)).build());
+        // Health Bar (Premium Style)
+        float barWidth = getWidth() - 53;
+        float barX = getX() + 45;
+        float barY = getY() + 30;
+
+        rectangle.render(ShapeProperties.create(matrix, barX, barY, barWidth, 4).round(2)
+                .color(new Color(25, 25, 25, 150).getRGB()).build());
+
+        rectangle.render(ShapeProperties.create(matrix, barX, barY, (health / 360f) * barWidth, 4).round(2)
+                .color(new Color(138, 43, 226, 255).getRGB(), new Color(0, 191, 255, 255).getRGB(), new Color(0, 191, 255, 255).getRGB(), new Color(138, 43, 226, 255).getRGB()).build());
+
+        // Absorption Status Circle
         if (absorption > 0 && !Network.isFunTime()) {
-            arc.render(ShapeProperties.create(matrix, getX() + getWidth() - 28.5f, getY() + 2.5f, 26, 26).round(0.26F).thickness(0.30f)
-                    .end(absorption - 2.5f)
-                    .color(new Color(255, 215, 0, 255).getRGB(), new Color(255, 128, 0, 255).getRGB(), new Color(255, 215, 0, 255).getRGB(), new Color(255, 128, 0, 255).getRGB())
-                    .build());
+            float arcSize = 14;
+            float arcX = getX() + getWidth() - arcSize - 10;
+            float arcY = getY() + 8;
+            arc.render(ShapeProperties.create(matrix, arcX, arcY, arcSize, arcSize).round(0.26F).thickness(0.30f).end(absorption)
+                    .color(new Color(255, 215, 0, 255).getRGB()).build());
         }
 
-        if (nameWidth > 50) {
-            ScissorAssist scissorManager = Rich.getInstance().getScissorManager();
-            scissorManager.push(matrix.peek().getPositionMatrix(), getX(), getY(), getWidth() - 29, getHeight());
-            font.drawGradientString(matrix, lastTarget.getName().getString(), getX() + 29, getY() + 9f, ColorAssist.getText(), ColorAssist.getText(0.15F));
-            distancefont.drawString(matrix, "Distance: " + distanceText, getX() + 29, getY() + 19f, new Color(225, 225, 255, 255).getRGB());
-            scissorManager.pop();
-        } else {
-            font.drawString(matrix, lastTarget.getName().getString(), getX() + 29, getY() + 9f, ColorAssist.getText());
-            distancefont.drawString(matrix, "Distance: " + distanceText, getX() + 29, getY() + 19f, new Color(225, 225, 255, 255).getRGB());
-        }
-
-        float arcCenterX = getX() + getWidth() - 30.5f / 2.0F;
-        float arcCenterY = getY() + 30 / 2.0F;
-        Fonts.getSize(11, Fonts.Type.BOLD).drawCenteredString(matrix, stringHp, arcCenterX, arcCenterY, new Color(255,255,255,225).getRGB());
+        Fonts.getSize(11, Fonts.Type.BOLD).drawString(matrix, stringHp, getX() + getWidth() - 30, getY() + 20, new Color(255, 255, 255, 225).getRGB());
     }
 
     private void drawArmor(DrawContext context, MatrixStack matrix) {
         ItemStack[] slots = new ItemStack[] {
                 lastTarget.getMainHandStack(),
-                lastTarget.getOffHandStack(),
                 lastTarget.getEquippedStack(net.minecraft.entity.EquipmentSlot.HEAD),
                 lastTarget.getEquippedStack(net.minecraft.entity.EquipmentSlot.CHEST),
                 lastTarget.getEquippedStack(net.minecraft.entity.EquipmentSlot.LEGS),
-                lastTarget.getEquippedStack(net.minecraft.entity.EquipmentSlot.FEET)
+                lastTarget.getEquippedStack(net.minecraft.entity.EquipmentSlot.FEET),
+                lastTarget.getOffHandStack()
         };
-        float x = getX() + 21f;
-        float y = getY() + 17;
-        float slotSize = 16 * 0.5F + 2;
-        matrix.push();
-        matrix.translate(x, y, 0);
-        for (int i = 0; i < 6; i++) {
-            float currentX = i * 11.5f;
 
-            blur.render(ShapeProperties.create(matrix, currentX - 0.5f, 15F, slotSize + 1, slotSize + 1)
-                    .round(3).quality(12)
-                    .color(new Color(0, 0, 0, 150).getRGB())
+        float startX = getX() + 30;
+        float y = getY() + 45;
+        float slotSize = 16;
+        float spacing = 4;
+
+        for (int i = 0; i < 6; i++) {
+            float currentX = startX + i * (slotSize + spacing);
+
+            blur.render(ShapeProperties.create(matrix, currentX, y, slotSize, slotSize)
+                    .round(5).quality(12)
+                    .color(new Color(0, 0, 0, 100).getRGB())
                     .build());
 
-            rectangle.render(ShapeProperties.create(matrix, currentX - 0.5f, 15F, slotSize + 1, slotSize + 1)
-                    .round(3)
-                    .thickness(0.1f)
-                    .outlineColor(new Color(33, 33, 33, 255).getRGB())
-                    .color(
-                            new Color(18, 19, 20, 75).getRGB(),
-                            new Color(0, 2, 5, 75).getRGB(),
-                            new Color(0, 2, 5, 75).getRGB(),
-                            new Color(18, 19, 20, 75).getRGB())
+            rectangle.render(ShapeProperties.create(matrix, currentX, y, slotSize, slotSize)
+                    .round(5)
+                    .thickness(1.0f)
+                    .outlineColor(new Color(138, 43, 226, 50).getRGB())
+                    .color(new Color(15, 15, 15, 180).getRGB())
                     .build());
 
             if (!slots[i].isEmpty()) {
-                Render2D.defaultDrawStack(context, slots[i], currentX, 15.5F, false, false, 0.5F);
+                Render2D.defaultDrawStack(context, slots[i], currentX, y, false, false, 0.8F);
             } else {
-                String xText = "x";
-                FontRenderer font = Fonts.getSize(12, Fonts.Type.DEFAULT);
-                float textWidth = font.getStringWidth(xText);
-                float textHeight = font.getStringHeight(xText);
-                float textX = currentX + (slotSize - textWidth) / 2.0F;
-                float textY = 15.5F + (slotSize - textHeight) / 2.0F;
-                font.drawString(matrix, xText, textX, textY + 6.25f, new Color(225, 225, 255, 255).getRGB());
+                Fonts.getSize(10, Fonts.Type.DEFAULT).drawCenteredString(matrix, "x", currentX + slotSize / 2f, y + slotSize / 2f + 1, new Color(255, 255, 255, 100).getRGB());
             }
         }
-        matrix.pop();
     }
 
     private void drawUsingItem(DrawContext context, MatrixStack matrix) {
@@ -228,8 +210,17 @@ public class TargetHud extends AbstractDraggable {
         LivingEntityRenderState state = renderer.getAndUpdateRenderState(lastTarget, tickCounter.getTickDelta(false));
         Identifier textureLocation = renderer.getTexture(state);
         float alpha = faceAlphaAnimation.getOutput().floatValue();
+
+        float faceSize = 30;
+        float faceX = getX() + 8;
+        float faceY = getY() + 5;
+
+        // Round head logic would be complex with standard drawTexture, so we use a rounded background behind it
+        rectangle.render(ShapeProperties.create(context.getMatrices(), faceX - 1, faceY - 1, faceSize + 2, faceSize + 2)
+                .round(8).color(new Color(138, 43, 226, 120).getRGB()).build());
+
         Calculate.setAlpha(alpha, () -> {
-            Render2D.drawTexture(context, textureLocation, getX() + 5, getY() + 5.5F, 20, 4, 8, 8, 64, ColorAssist.getRect(1), ColorAssist.multRed(-1, 1 + lastTarget.hurtTime / 4F));
+            Render2D.drawTexture(context, textureLocation, faceX, faceY, faceSize, 8, 8, 8, 64, ColorAssist.getRect(1), ColorAssist.multRed(-1, 1 + lastTarget.hurtTime / 4F));
         });
     }
 }

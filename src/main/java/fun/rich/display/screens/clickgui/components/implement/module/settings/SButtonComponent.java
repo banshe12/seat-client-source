@@ -1,6 +1,6 @@
 package fun.rich.display.screens.clickgui.components.implement.module.settings;
 
-import fun.rich.display.screens.clickgui.components.implement.other.ButtonComponent;
+import fun.rich.display.screens.clickgui.components.implement.module.other.ButtonComponent;
 import fun.rich.display.screens.clickgui.components.implement.settings.AbstractSettingComponent;
 import net.minecraft.client.gui.DrawContext;
 

@@ -91,12 +91,8 @@ public class SelectComponent extends AbstractSettingComponent {
         int x1 = (int) (x + width - 72);
         float offset = 64;
         rectangle.render(ShapeProperties.create(matrices, x + width - 75, y + 7, 66, 14)
-                .round(3).thickness(2).outlineColor(new Color(35, 52, 55, 155).getRGB())
-                .color(
-                        new Color(15, 15, 15, 0).getRGB(),
-                        new Color(15, 15, 15, 0).getRGB(),
-                        new Color(15, 15, 15, 0).getRGB(),
-                        new Color(15, 15, 15, 0).getRGB())
+                .round(15f).thickness(1.0f).outlineColor(new Color(138, 43, 226, 150).getRGB())
+                .color(new Color(25, 25, 25, 150).getRGB())
                 .build());
         String selectedName = String.join(", ", setting.getSelected());
         Fonts.getSize(12, BOLD).drawString(matrices, selectedName, x + width - 75 + 3, y + 13, new Color(225, 225, 225, 225).getRGB());
@@ -105,15 +101,11 @@ public class SelectComponent extends AbstractSettingComponent {
 
     private void renderSelectList(DrawContext context, int mouseX, int mouseY, float delta) {
         float opacity = alphaAnimation.getOutput().floatValue();
-        int alpha = (int) (opacity * 0);
+        int alpha = (int) (opacity * 180);
         float animatedHeight = heightAnimation.getOutput().floatValue();
         rectangle.render(ShapeProperties.create(context.getMatrices(), dropdownListX, dropDownListY, dropDownListWidth, animatedHeight)
-                .round(3).thickness(2).outlineColor(new Color(55, 52, 55, 155).getRGB())
-                .color(
-                        new Color(15, 15, 15, alpha).getRGB(),
-                        new Color(15, 15, 15, alpha).getRGB(),
-                        new Color(15, 15, 15, alpha).getRGB(),
-                        new Color(15, 15, 15, alpha).getRGB())
+                .round(15f).thickness(1.0f).outlineColor(new Color(138, 43, 226, 150).getRGB())
+                .color(new Color(15, 15, 15, alpha).getRGB())
                 .build());
         float offset = dropDownListY;
         for (SelectedButton button : selectedButtons) {

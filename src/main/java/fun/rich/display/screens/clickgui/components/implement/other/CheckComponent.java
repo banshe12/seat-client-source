@@ -26,7 +26,7 @@ public class CheckComponent extends AbstractComponent {
 
     @Override
     public CheckComponent position(float x, float y) {
-        this.x = x - 7;
+        this.x = x - 8;
         this.y = y + 2;
         return this;
     }
@@ -37,36 +37,31 @@ public class CheckComponent extends AbstractComponent {
         alphaAnimation.setDirection(state ? FORWARDS : BACKWARDS);
         stencilAnimation.setDirection(state ? FORWARDS : BACKWARDS);
         sliderAnimation.setDirection(state ? FORWARDS : BACKWARDS);
-        int stateColor = new Color(128, 128, 128, 255).getRGB();
+        int stateColor = new Color(138, 43, 226, 255).getRGB();
         int opacity = alphaAnimation.getOutput().intValue();
-        float sliderX = x + sliderAnimation.getOutput().floatValue();
+        float sliderX = x + (sliderAnimation.getOutput().floatValue() / 8f) * 9f;
 
-        rectangle.render(ShapeProperties.create(matrix, x, y, 16, 8)
-                .round(4).thickness(0).softness(0)
-                .outlineColor(new Color(128, 128, 128, 255).getRGB())
-                .color(new Color(128, 128, 128, 40).getRGB())
+        rectangle.render(ShapeProperties.create(matrix, x, y, 18, 9)
+                .round(4.5f).thickness(1.0f).softness(1)
+                .outlineColor(new Color(138, 43, 226, 100).getRGB())
+                .color(new Color(25, 25, 25, 40).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(matrix, x, y, 16, 8)
-                .round(4).thickness(0).softness(0)
-                .outlineColor(new Color(128, 128, 128, 255).getRGB())
+        rectangle.render(ShapeProperties.create(matrix, x, y, 18, 9)
+                .round(4.5f).thickness(0).softness(0)
                 .color(Calculate.applyOpacity(stateColor, opacity))
                 .build());
 
-        rectangle.render(ShapeProperties.create(matrix, sliderX - 0.5f, y - 0.5f, 9, 9)
-                .round(4.5f).thickness(2).softness(1)
-                .outlineColor(new Color(155, 155, 165, 255).getRGB())
-                .color(
-                        new Color(61, 67, 71, 255).getRGB(),
-                        new Color(71, 77, 81, 255).getRGB(),
-                        new Color(81, 87, 91, 255).getRGB(),
-                        new Color(91, 97, 101, 255).getRGB())
+        rectangle.render(ShapeProperties.create(matrix, sliderX - 1f, y - 1f, 11, 11)
+                .round(5.5f).thickness(1.0f).softness(1)
+                .outlineColor(new Color(138, 43, 226, 255).getRGB())
+                .color(new Color(255, 255, 255, 255).getRGB())
                 .build());
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (Calculate.isHovered(mouseX, mouseY, x, y, 16, 8) && button == 0) {
+        if (Calculate.isHovered(mouseX, mouseY, x, y, 18, 9) && button == 0) {
             runnable.run();
         }
         return super.mouseClicked(mouseX, mouseY, button);

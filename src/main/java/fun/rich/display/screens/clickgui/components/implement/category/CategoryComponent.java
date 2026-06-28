@@ -90,9 +90,9 @@ public class CategoryComponent extends AbstractComponent {
         for (int i = moduleComponents.size() - 1; i >= 0; i--) {
             ModuleComponent component = moduleComponents.get(i);
             if (shouldRenderComponent(component)) {
-                int componentHeight = component.getComponentHeight() + 9;
+                int componentHeight = component.getComponentHeight() + 12;
                 component.x = menuScreen.x + 32 + (column * (columnWidth + 48));
-                component.y = (float) (menuScreen.y + 35 + offsets[column] - componentHeight + smoothedScroll);
+                component.y = (float) (menuScreen.y + 38 + offsets[column] - componentHeight + smoothedScroll);
                 component.width = columnWidth + 40;
                 if (component.y > menuScreen.y - componentHeight && menuScreen.y + menuScreen.height + 15 > component.y) {
                     component.render(context, mouseX, mouseY, delta);
@@ -105,7 +105,7 @@ public class CategoryComponent extends AbstractComponent {
         scissorManager.pop();
         int clamped = MathHelper.clamp(maxScroll - (menuScreen.height / 2 + 35), 0, maxScroll);
         scroll = MathHelper.clamp(scroll, -clamped, 0);
-        smoothedScroll = Calculate.interpolateSmooth(2, smoothedScroll, scroll);
+        smoothedScroll = Calculate.interpolate(smoothedScroll, scroll, 0.15f);
 
         if (clamped > 0) {
             float scrollbarWidth = 4;
@@ -266,19 +266,13 @@ public class CategoryComponent extends AbstractComponent {
 
         if (!MenuScreen.INSTANCE.getCategory().equals(category) && Calculate.isHovered(mouseX, mouseY, hoverX, hoverY, baseWidth, baseHeight)) {
             rectangle.render(ShapeProperties.create(matrix, hoverX, hoverY, baseWidth, baseHeight)
-                    .round(4F)
-                    .color(new Color(55, 55, 55, 100).getRGB(),
-                            new Color(85, 85, 100, 100).getRGB(),
-                            new Color(55, 55, 55, 100).getRGB(),
-                            new Color(85, 85, 100, 100).getRGB()).build());
+                    .round(12f)
+                    .color(new Color(138, 43, 226, 30).getRGB()).build());
         }
 
         rectangle.render(ShapeProperties.create(matrix, scaledX, scaledY, scaledWidth, scaledHeight)
-                .round(5F)
-                .color(new Color(21, 21, 21, alpha).getRGB(),
-                        new Color(61, 61, 61, alpha).getRGB(),
-                        new Color(61, 61, 61, alpha).getRGB(),
-                        new Color(21, 21, 21, alpha).getRGB()).build());
+                .round(12f)
+                .color(new Color(138, 43, 226, (int)(alpha * 0.7f)).getRGB()).build());
 
 
         if (ModuleCategory.COMBAT.equals(category)) {
@@ -310,7 +304,7 @@ public class CategoryComponent extends AbstractComponent {
         for (int i = moduleComponents.size() - 1; i >= 0; i--) {
             ModuleComponent component = moduleComponents.get(i);
             if (shouldRenderComponent(component)) {
-                int componentHeight = component.getComponentHeight() + 9;
+                int componentHeight = component.getComponentHeight() + 12;
                 offsets[column] += componentHeight;
                 column = (column + 1) % 2;
             }

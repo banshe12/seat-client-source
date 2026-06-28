@@ -40,25 +40,20 @@ public class SearchComponent extends AbstractComponent {
         width = 80;
         height = 15;
 
-        blur.render(ShapeProperties.create(matrix, x, y, width, height).round(3).quality(64)
-                .color(new Color(0, 0, 0, 200).getRGB())
+        blur.render(ShapeProperties.create(matrix, x, y, width, height).round(15f).quality(64)
+                .color(new Color(0, 0, 0, 150).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(3)
-                .softness(2)
-                .thickness(0.5f)
-                .outlineColor(new Color(18, 19, 20, 225).getRGB())
-                .color(
-                        new Color(18, 19, 20, 155).getRGB(),
-                        new Color(5, 6, 7, 155).getRGB(),
-                        new Color(5, 6, 7, 155).getRGB(),
-                        new Color(18, 19, 20, 155).getRGB())
+        rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(15f)
+                .thickness(1.0f)
+                .outlineColor(new Color(138, 43, 226, 200).getRGB())
+                .color(new Color(15, 15, 15, 180).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(matrix, x + 65.5f, y + 4, 0.5f, height - 8)
-                .color(new Color(155, 155, 155, 55).getRGB()).build());
+        rectangle.render(ShapeProperties.create(matrix, x + 63.5f, y + 4, 0.5f, height - 8)
+                .color(new Color(138, 43, 226, 155).getRGB()).build());
 
-        Fonts.getSize(25, Fonts.Type.ICONS).drawString(context.getMatrices(), "U", x + width - 14, y + 3.5f, typing ? -1 : 0xFF878894);
+        Fonts.getSize(25, Fonts.Type.ICONS).drawString(context.getMatrices(), "U", x + width - 15, y + 3.5f, typing ? -1 : 0xFF878894);
         String displayText = text.equalsIgnoreCase("") && !typing ? "Search" : text;
         ScissorAssist scissor = Rich.getInstance().getScissorManager();
         scissor.push(matrix.peek().getPositionMatrix(), x + 1, y, width - 3, height);
