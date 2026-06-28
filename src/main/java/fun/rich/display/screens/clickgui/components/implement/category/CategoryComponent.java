@@ -267,12 +267,12 @@ public class CategoryComponent extends AbstractComponent {
         if (!MenuScreen.INSTANCE.getCategory().equals(category) && Calculate.isHovered(mouseX, mouseY, hoverX, hoverY, baseWidth, baseHeight)) {
             rectangle.render(ShapeProperties.create(matrix, hoverX, hoverY, baseWidth, baseHeight)
                     .round(6F)
-                    .color(new Color(138, 43, 226, 50).getRGB()).build());
+                    .color(new Color(138, 43, 226, 40).getRGB()).build());
         }
 
         rectangle.render(ShapeProperties.create(matrix, scaledX, scaledY, scaledWidth, scaledHeight)
                 .round(6F)
-                .color(new Color(138, 43, 226, alpha).getRGB()).build());
+                .color(new Color(138, 43, 226, (int)(alpha * 0.6f)).getRGB()).build());
 
 
         if (ModuleCategory.COMBAT.equals(category)) {

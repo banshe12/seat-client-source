@@ -35,11 +35,11 @@ public class ModuleSettingsWindow extends AbstractWindow {
         ScissorAssist scissorManager = Rich.getInstance().getScissorManager();
         height = MathHelper.clamp(getComponentHeight() + 5, 0, 200);
 
-        blur.render(ShapeProperties.create(matrix, x, y, width, height).round(10).quality(12)
+        blur.render(ShapeProperties.create(matrix, x, y, width, height).round(15f).quality(12)
                 .color(new Color(0, 0, 0, 150).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(10)
+        rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(15f)
                 .thickness(1.5f)
                 .outlineColor(new Color(138, 43, 226, 255).getRGB())
                 .color(

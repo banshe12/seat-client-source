@@ -91,7 +91,7 @@ public class SelectComponent extends AbstractSettingComponent {
         int x1 = (int) (x + width - 72);
         float offset = 64;
         rectangle.render(ShapeProperties.create(matrices, x + width - 75, y + 7, 66, 14)
-                .round(4).thickness(1.0f).outlineColor(new Color(138, 43, 226, 150).getRGB())
+                .round(15f).thickness(1.0f).outlineColor(new Color(138, 43, 226, 150).getRGB())
                 .color(new Color(25, 25, 25, 150).getRGB())
                 .build());
         String selectedName = String.join(", ", setting.getSelected());
@@ -104,7 +104,7 @@ public class SelectComponent extends AbstractSettingComponent {
         int alpha = (int) (opacity * 180);
         float animatedHeight = heightAnimation.getOutput().floatValue();
         rectangle.render(ShapeProperties.create(context.getMatrices(), dropdownListX, dropDownListY, dropDownListWidth, animatedHeight)
-                .round(4).thickness(1.0f).outlineColor(new Color(138, 43, 226, 150).getRGB())
+                .round(15f).thickness(1.0f).outlineColor(new Color(138, 43, 226, 150).getRGB())
                 .color(new Color(15, 15, 15, alpha).getRGB())
                 .build());
         float offset = dropDownListY;

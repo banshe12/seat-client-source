@@ -53,22 +53,22 @@ public class StatusRender extends AbstractComponent {
         sliderAnimation.setDirection(state ? FORWARDS : BACKWARDS);
         int stateColor = new Color(138, 43, 226, 255).getRGB();
         int opacity = (int) (alphaAnimation.getOutput().intValue() * alphaMultiplier);
-        float sliderX = x + sliderAnimation.getOutput().floatValue();
+        float sliderX = x + (sliderAnimation.getOutput().floatValue() / 8f) * 9f;
 
         int baseAlpha = (int) (255 * alphaMultiplier);
         int bgAlpha = (int) (40 * alphaMultiplier);
 
-        rectangle.render(ShapeProperties.create(matrix, x, y, 16, 8)
-                .round(4).thickness(0.5f).softness(1)
+        rectangle.render(ShapeProperties.create(matrix, x, y, 18, 9)
+                .round(4.5f).thickness(1.0f).softness(1)
                 .outlineColor(new Color(138, 43, 226, 100).getRGB())
                 .color(new Color(25, 25, 25, bgAlpha).getRGB())
                 .build());
-        rectangle.render(ShapeProperties.create(matrix, x, y, 16, 8)
-                .round(4).thickness(0).softness(1)
+        rectangle.render(ShapeProperties.create(matrix, x, y, 18, 9)
+                .round(4.5f).thickness(0).softness(1)
                 .color(Calculate.applyOpacity(stateColor, opacity))
                 .build());
-        rectangle.render(ShapeProperties.create(matrix, sliderX - 0.5f, y - 0.5f, 9, 9)
-                .round(4.5f).thickness(0.5f).softness(1)
+        rectangle.render(ShapeProperties.create(matrix, sliderX - 1f, y - 1f, 11, 11)
+                .round(5.5f).thickness(1.0f).softness(1)
                 .outlineColor(new Color(138, 43, 226, baseAlpha).getRGB())
                 .color(new Color(255, 255, 255, baseAlpha).getRGB())
                 .build());
@@ -76,7 +76,7 @@ public class StatusRender extends AbstractComponent {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (Calculate.isHovered(mouseX, mouseY, x, y, 16, 8) && button == 0) {
+        if (Calculate.isHovered(mouseX, mouseY, x, y, 18, 9) && button == 0) {
             state = !state;
             runnable.run();
         }
