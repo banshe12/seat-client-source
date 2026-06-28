@@ -72,20 +72,20 @@ public class BackgroundComponent extends AbstractComponent {
         DiscordManager discord = Rich.getInstance().getDiscordManager();
         Rich.getInstance().getScissorManager().push(matrix.peek().getPositionMatrix(), 0, 0, window.getScaledWidth(), window.getScaledHeight());
 
-        blur.render(ShapeProperties.create(matrix, x, y, width, height).round(18f).quality(64)
+        blur.render(ShapeProperties.create(matrix, x, y, width, height).round(12f).quality(64)
                 .color(new Color(0, 0, 0, 150).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(18f)
+        rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(12f)
                 .thickness(1.0f)
                 .outlineColor(new Color(138, 43, 226, 180).getRGB())
                 .color(new Color(10, 10, 10, 210).getRGB())
                 .build());
 
-        // Header accent
-        rectangle.render(ShapeProperties.create(matrix, x + 1, y + 1, width - 2, 28)
-                .round(14, 14, 0, 0)
-                .color(new Color(138, 43, 226, 30).getRGB())
+        // Top bar gradient
+        rectangle.render(ShapeProperties.create(matrix, x + 4, y + 1, width - 8, 1.5f)
+                .round(1f)
+                .color(new Color(138, 43, 226, 255).getRGB(), new Color(0, 191, 255, 255).getRGB(), new Color(0, 191, 255, 255).getRGB(), new Color(138, 43, 226, 255).getRGB())
                 .build());
 
         List<Map<String, Object>> displayedConfigs = new ArrayList<>();
@@ -205,14 +205,14 @@ public class BackgroundComponent extends AbstractComponent {
                 if (configY + 50 > y + 60 && configY < y + height) {
 
                     blur.render(ShapeProperties.create(matrix, configX, configY, 180, 50)
-                            .round(10).quality(64)
+                            .round(8f).quality(64)
                             .color(new Color(0, 0, 0, 150).getRGB())
                             .build());
 
                     rectangle.render(ShapeProperties.create(matrix, configX, configY, 180, 50)
-                            .round(10)
-                            .thickness(1.5f)
-                            .outlineColor(new Color(138, 43, 226, 255).getRGB())
+                            .round(8f)
+                            .thickness(1.0f)
+                            .outlineColor(new Color(138, 43, 226, 120).getRGB())
                             .color(
                                     new Color(15, 15, 15, 180).getRGB(),
                                     new Color(15, 15, 15, 180).getRGB(),

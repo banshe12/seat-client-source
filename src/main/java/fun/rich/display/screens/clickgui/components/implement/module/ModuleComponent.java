@@ -75,28 +75,33 @@ public class ModuleComponent extends AbstractComponent {
         int alphaOffset = 150 + alphaAnimation.getOutput().intValue();
 
         blur.render(ShapeProperties.create(context.getMatrices(), x, y, width, height = getComponentHeight())
-                .round(5)
-                .color(new Color(0, 0, 0, 200).getRGB())
+                .round(12f).quality(12)
+                .color(new Color(0, 0, 0, 150).getRGB())
                 .build());
 
         rectangle.render(ShapeProperties.create(context.getMatrices(), x, y, width, height = getComponentHeight())
-                .round(5)
-                .color(
-                        new Color(23, 24, 25, 145).getRGB(),
-                        new Color(Math.min(19 + brightnessOffset, 255), Math.min(19 + brightnessOffset, 255), Math.min(21 + brightnessOffset, 255), 255).getRGB(),
-                        new Color(10, 12, 15, 145).getRGB(),
-                        new Color(Math.min(19 + brightnessOffset, 255), Math.min(19 + brightnessOffset, 255), Math.min(21 + brightnessOffset, 255), 255).getRGB())
+                .round(12f)
+                .thickness(1.0f)
+                .outlineColor(new Color(138, 43, 226, module.isState() ? 180 : 40).getRGB())
+                .color(new Color(10, 10, 10, 210).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(context.getMatrices(), x, y + descHeight + 25, width, 1)
-                .color(new Color(25, 25, 40, 155).getRGB(), new Color(55, 55, 60, 155).getRGB(), new Color(55, 55, 60, 155).getRGB(), new Color(25, 25, 40, 155).getRGB())
+        if (module.isState()) {
+            rectangle.render(ShapeProperties.create(context.getMatrices(), x + 4, y + 1, width - 8, 1.2f)
+                    .round(1f)
+                    .color(new Color(138, 43, 226, 255).getRGB(), new Color(0, 191, 255, 255).getRGB(), new Color(0, 191, 255, 255).getRGB(), new Color(138, 43, 226, 255).getRGB())
+                    .build());
+        }
+
+        rectangle.render(ShapeProperties.create(context.getMatrices(), x + 6, y + descHeight + 25, width - 12, 0.5f)
+                .color(new Color(138, 43, 226, 100).getRGB(), new Color(0, 191, 255, 100).getRGB(), new Color(0, 191, 255, 100).getRGB(), new Color(138, 43, 226, 100).getRGB())
                 .build());
 
         if (!module.settings().isEmpty()) {
-            Fonts.getSize(18, GUIICONS).drawString(context.getMatrices(), "A", x + 7, y + descHeight + 6F + 27f, new Color(225, 225, 255, 255).getRGB());
-            Fonts.getSize(16, GUIICONS).drawString(context.getMatrices(), "B", x + 20, y + descHeight + 6F + 27.5f, new Color(225, 225, 255, 255).getRGB());
+            Fonts.getSize(18, GUIICONS).drawString(context.getMatrices(), "A", x + 10, y + descHeight + 6F + 27f, new Color(225, 225, 255, 255).getRGB());
+            Fonts.getSize(16, GUIICONS).drawString(context.getMatrices(), "B", x + 23, y + descHeight + 6F + 27.5f, new Color(225, 225, 255, 255).getRGB());
         } else {
-            Fonts.getSize(18, GUIICONS).drawString(context.getMatrices(), "A", x + 7, y + descHeight + 6F + 27f, new Color(225, 225, 255, 255).getRGB());
+            Fonts.getSize(18, GUIICONS).drawString(context.getMatrices(), "A", x + 10, y + descHeight + 6F + 27f, new Color(225, 225, 255, 255).getRGB());
         }
 
         statusRender.position(x + width - 16, y + descHeight + 5.5F + 25.5f)
@@ -251,12 +256,8 @@ public class ModuleComponent extends AbstractComponent {
 
         rectangle.render(ShapeProperties.create(context.getMatrices(), bindX + 0.25f, back, stringWidth + 6, 10)
                 .round(3f)
-                .outlineColor(new Color(155, 155, 165, 255).getRGB())
-                .color(
-                        new Color(61, 67, 71, 80).getRGB(),
-                        new Color(71, 77, 81, 80).getRGB(),
-                        new Color(81, 87, 91, 80).getRGB(),
-                        new Color(91, 97, 101, 80).getRGB())
+                .outlineColor(new Color(138, 43, 226, 120).getRGB())
+                .color(new Color(15, 15, 15, 150).getRGB())
                 .build());
 
         int bindingColor = ColorHelper.getArgb(255, 135, 136, 148);
