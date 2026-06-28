@@ -37,30 +37,25 @@ public class CheckComponent extends AbstractComponent {
         alphaAnimation.setDirection(state ? FORWARDS : BACKWARDS);
         stencilAnimation.setDirection(state ? FORWARDS : BACKWARDS);
         sliderAnimation.setDirection(state ? FORWARDS : BACKWARDS);
-        int stateColor = new Color(128, 128, 128, 255).getRGB();
+        int stateColor = new Color(138, 43, 226, 255).getRGB();
         int opacity = alphaAnimation.getOutput().intValue();
         float sliderX = x + sliderAnimation.getOutput().floatValue();
 
         rectangle.render(ShapeProperties.create(matrix, x, y, 16, 8)
-                .round(4).thickness(0).softness(0)
-                .outlineColor(new Color(128, 128, 128, 255).getRGB())
-                .color(new Color(128, 128, 128, 40).getRGB())
+                .round(4).thickness(0.5f).softness(1)
+                .outlineColor(new Color(138, 43, 226, 100).getRGB())
+                .color(new Color(25, 25, 25, 40).getRGB())
                 .build());
 
         rectangle.render(ShapeProperties.create(matrix, x, y, 16, 8)
                 .round(4).thickness(0).softness(0)
-                .outlineColor(new Color(128, 128, 128, 255).getRGB())
                 .color(Calculate.applyOpacity(stateColor, opacity))
                 .build());
 
         rectangle.render(ShapeProperties.create(matrix, sliderX - 0.5f, y - 0.5f, 9, 9)
-                .round(4.5f).thickness(2).softness(1)
-                .outlineColor(new Color(155, 155, 165, 255).getRGB())
-                .color(
-                        new Color(61, 67, 71, 255).getRGB(),
-                        new Color(71, 77, 81, 255).getRGB(),
-                        new Color(81, 87, 91, 255).getRGB(),
-                        new Color(91, 97, 101, 255).getRGB())
+                .round(4.5f).thickness(0.5f).softness(1)
+                .outlineColor(new Color(138, 43, 226, 255).getRGB())
+                .color(new Color(255, 255, 255, 255).getRGB())
                 .build());
     }
 

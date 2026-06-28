@@ -13,7 +13,7 @@ import fun.rich.utils.display.shape.ShapeProperties;
 import fun.rich.utils.display.shape.implement.Rectangle;
 import fun.rich.display.screens.clickgui.MenuScreen;
 import fun.rich.display.screens.clickgui.components.AbstractComponent;
-import fun.rich.display.screens.clickgui.components.implement.other.StatusRender;
+import fun.rich.display.screens.clickgui.components.implement.module.other.StatusRender;
 import fun.rich.display.screens.clickgui.components.implement.settings.AbstractSettingComponent;
 import fun.rich.utils.math.calc.Calculate;
 import fun.rich.utils.client.chat.StringHelper;
@@ -92,7 +92,7 @@ public class ModuleComponent extends AbstractComponent {
                         new Color(15, 15, 15, 180).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(context.getMatrices(), x, y + descHeight + 25, width, 1)
+        rectangle.render(ShapeProperties.create(context.getMatrices(), x, y + descHeight + 25, width, 0.5f)
                 .color(new Color(138, 43, 226, 155).getRGB(), new Color(138, 43, 226, 55).getRGB(), new Color(138, 43, 226, 55).getRGB(), new Color(138, 43, 226, 155).getRGB())
                 .build());
 
@@ -255,13 +255,9 @@ public class ModuleComponent extends AbstractComponent {
 
         rectangle.render(ShapeProperties.create(context.getMatrices(), bindX + 0.25f, back, stringWidth + 6, 10)
                 .round(3f)
-                .thickness(1.5f)
-                .outlineColor(new Color(138, 43, 226, 255).getRGB())
-                .color(
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB(),
-                        new Color(15, 15, 15, 180).getRGB())
+                .thickness(1.0f)
+                .outlineColor(new Color(138, 43, 226, 200).getRGB())
+                .color(new Color(15, 15, 15, 180).getRGB())
                 .build());
 
         int bindingColor = ColorHelper.getArgb(255, 225, 225, 255);

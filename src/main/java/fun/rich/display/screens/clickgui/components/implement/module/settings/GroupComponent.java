@@ -1,6 +1,6 @@
 package fun.rich.display.screens.clickgui.components.implement.module.settings;
 
-import fun.rich.display.screens.clickgui.components.implement.other.SettingComponent;
+import fun.rich.display.screens.clickgui.components.implement.module.other.SettingComponent;
 import fun.rich.display.screens.clickgui.components.implement.settings.AbstractSettingComponent;
 import net.minecraft.client.gui.DrawContext;
 
@@ -8,7 +8,7 @@ import fun.rich.features.module.setting.implement.GroupSetting;
 import fun.rich.utils.display.font.Fonts;
 import fun.rich.display.screens.clickgui.components.implement.window.AbstractWindow;
 import fun.rich.display.screens.clickgui.components.implement.window.implement.settings.group.GroupWindow;
-import fun.rich.display.screens.clickgui.components.implement.other.CheckComponent;
+import fun.rich.display.screens.clickgui.components.implement.module.other.CheckComponent;
 
 import java.awt.*;
 

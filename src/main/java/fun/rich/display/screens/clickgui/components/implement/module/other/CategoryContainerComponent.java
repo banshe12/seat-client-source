@@ -1,12 +1,12 @@
 package fun.rich.display.screens.clickgui.components.implement.module.other;
 
-import fun.rich.display.screens.clickgui.components.implement.other.SearchComponent;
+import fun.rich.display.screens.clickgui.components.implement.module.other.SearchComponent;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.gui.DrawContext;
 
 import fun.rich.features.module.ModuleCategory;
-import fun.rich.display.screens.clickgui.components.implement.category.CategoryComponent;
+import fun.rich.display.screens.clickgui.components.implement.module.category.CategoryComponent;
 import fun.rich.display.screens.clickgui.components.implement.settings.TextComponent;
 import fun.rich.utils.interactions.inv.InventoryFlowManager;
 import fun.rich.display.screens.clickgui.components.AbstractComponent;

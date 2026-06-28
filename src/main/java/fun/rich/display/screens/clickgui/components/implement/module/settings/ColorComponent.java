@@ -39,7 +39,7 @@ public class ColorComponent extends AbstractSettingComponent {
                 .round(3.5F).color(setting.getColor()).build());
 
         rectangle.render(ShapeProperties.create(matrix, x + width - 18, y + 10, 7, 7)
-                .round(3.5F).thickness(2).softness(1).outlineColor(ColorAssist.getText()).color(0x0FFFFFF).build());
+                .round(3.5F).thickness(1.0f).softness(0).outlineColor(new Color(138, 43, 226, 255).getRGB()).build());
     }
 
     @Override

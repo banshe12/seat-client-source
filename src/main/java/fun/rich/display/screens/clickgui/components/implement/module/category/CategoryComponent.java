@@ -131,10 +131,10 @@ public class CategoryComponent extends AbstractComponent {
             rectangle.render(ShapeProperties.create(context.getMatrices(), scrollbarX, handleY, scrollbarWidth, handleHeight)
                     .round(2F)
                     .color(
-                            new Color(138, 43, 226, 175).getRGB(),
-                            new Color(138, 43, 226, 255).getRGB(),
-                            new Color(138, 43, 226, 255).getRGB(),
-                            new Color(138, 43, 226, 175).getRGB())
+                            new Color(44, 44, 44, 75).getRGB(),
+                            new Color(101, 101, 101, 95).getRGB(),
+                            new Color(101, 101, 101, 95).getRGB(),
+                            new Color(44, 44, 44, 75).getRGB())
                     .build());
         }
     }
@@ -266,41 +266,35 @@ public class CategoryComponent extends AbstractComponent {
 
         if (!MenuScreen.INSTANCE.getCategory().equals(category) && Calculate.isHovered(mouseX, mouseY, hoverX, hoverY, baseWidth, baseHeight)) {
             rectangle.render(ShapeProperties.create(matrix, hoverX, hoverY, baseWidth, baseHeight)
-                    .round(4F)
-                    .color(new Color(138, 43, 226, 100).getRGB(),
-                            new Color(138, 43, 226, 150).getRGB(),
-                            new Color(138, 43, 226, 100).getRGB(),
-                            new Color(138, 43, 226, 150).getRGB()).build());
+                    .round(6F)
+                    .color(new Color(138, 43, 226, 50).getRGB()).build());
         }
 
         rectangle.render(ShapeProperties.create(matrix, scaledX, scaledY, scaledWidth, scaledHeight)
-                .round(5F)
-                .color(new Color(138, 43, 226, alpha).getRGB(),
-                        new Color(138, 43, 226, alpha + 20).getRGB(),
-                        new Color(138, 43, 226, alpha + 20).getRGB(),
-                        new Color(138, 43, 226, alpha).getRGB()).build());
+                .round(6F)
+                .color(new Color(138, 43, 226, alpha).getRGB()).build());
 
 
         if (ModuleCategory.COMBAT.equals(category)) {
-            Fonts.getSize(21, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "A", x + 16f, y + 8.5f, new Color(255, 255, 255, 255).getRGB());
+            Fonts.getSize(21, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "A", x + 16f, y + 8.5f, ColorAssist.getText());
         }
         if (ModuleCategory.MOVEMENT.equals(category)) {
-            Fonts.getSize(23, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "B", x + 15f, y + 7.5f, new Color(255, 255, 255, 255).getRGB());
+            Fonts.getSize(23, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "B", x + 15f, y + 7.5f, ColorAssist.getText());
         }
         if (ModuleCategory.RENDER.equals(category)) {
-            Fonts.getSize(21, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "C", x + 15f, y + 7.5f, new Color(255, 255, 255, 255).getRGB());
+            Fonts.getSize(21, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "C", x + 15f, y + 7.5f, ColorAssist.getText());
         }
         if (ModuleCategory.PLAYER.equals(category)) {
-            Fonts.getSize(23, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "D", x + 15f, y + 7.5f, new Color(255, 255, 255, 255).getRGB());
+            Fonts.getSize(23, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "D", x + 15f, y + 7.5f, ColorAssist.getText());
         }
         if (ModuleCategory.MISC.equals(category)) {
-            Fonts.getSize(21, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "E", x + 15.5f, y + 7.5f, new Color(255, 255, 255, 255).getRGB());
+            Fonts.getSize(21, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "E", x + 15.5f, y + 7.5f, ColorAssist.getText());
         }
         if (ModuleCategory.CONFIGS.equals(category)) {
-            Fonts.getSize(21, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "F", x + 15.5f, y + 7.5f, new Color(255, 255, 255, 255).getRGB());
+            Fonts.getSize(21, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "F", x + 15.5f, y + 7.5f, ColorAssist.getText());
         }
         if (ModuleCategory.AUTOBUY.equals(category)) {
-            Fonts.getSize(33, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "H", x + 15.5f, y + 4f, new Color(255, 255, 255, 255).getRGB());
+            Fonts.getSize(33, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "H", x + 15.5f, y + 4f, ColorAssist.getText());
         }
     }
 

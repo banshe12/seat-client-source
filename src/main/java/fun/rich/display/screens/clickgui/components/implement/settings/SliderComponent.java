@@ -78,20 +78,17 @@ public class SliderComponent extends AbstractSettingComponent {
         animation = Calculate.interpolate(animation, percentValue);
 
         rectangle.render(ShapeProperties.create(matrix, x + width - SLIDER_WIDTH - 9, y + 15, SLIDER_WIDTH, 3).round(1)
-                .color(0x2D2E414D).build());
+                .color(new Color(25, 25, 25, 150).getRGB()).build());
 
         rectangle.render(ShapeProperties.create(matrix, x + width - SLIDER_WIDTH - 9, y + 15, (float) animation, 3).round(1)
-                .color(new Color(55, 55, 60, 155).getRGB(), new Color(155, 155, 160, 155).getRGB(), new Color(255, 255, 255, 155).getRGB(), new Color(255, 255, 250, 155).getRGB()).build());
+                .color(new Color(138, 43, 226, 200).getRGB()).build());
 
         float v = MathHelper.clamp((float) (x + width - SLIDER_WIDTH + animation), 0, x + width - 4);
         rectangle.render(ShapeProperties.create(matrix, v - 10.5f, y + 12.5F, 7, 7)
-                .round(3).color(ColorAssist.getMainGuiColor()).build());
+                .round(3.5f).color(new Color(25, 25, 25, 255).getRGB()).build());
 
         rectangle.render(ShapeProperties.create(matrix, v - 10F, y + 13.5F, 6, 6)
-                .round(3).thickness(2).softness(0).color(new Color(61, 67, 71, 255).getRGB(),
-                        new Color(71, 77, 81, 255).getRGB(),
-                        new Color(81, 87, 91, 255).getRGB(),
-                        new Color(91, 97, 101, 255).getRGB()).build());
+                .round(3).thickness(1.0f).softness(0).outlineColor(new Color(138, 43, 226, 255).getRGB()).color(new Color(255, 255, 255, 255).getRGB()).build());
 
         return difference;
     }
