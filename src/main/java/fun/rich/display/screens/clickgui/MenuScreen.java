@@ -9,25 +9,24 @@ import net.minecraft.text.Text;
 import fun.rich.features.module.ModuleCategory;
 import fun.rich.common.animation.Animation;
 import fun.rich.common.animation.Direction;
-import fun.rich.utils.display.other.animator.DecelerateAnimation;
+import fun.rich.common.animation.implement.Decelerate;
 import fun.rich.utils.display.shape.ShapeProperties;
 import fun.rich.utils.client.sound.SoundManager;
 import fun.rich.utils.display.interfaces.QuickImports;
 import fun.rich.utils.math.calc.Calculate;
-import fun.rich.utils..other.StringUtil;
+import fun.rich.utils.client.chat.StringHelper;
 import fun.rich.utils.display.font.Fonts;
 import fun.rich.commands.defaults.BindCommand;
 import fun.rich.display.screens.clickgui.components.AbstractComponent;
 import fun.rich.display.screens.clickgui.components.implement.other.*;
 import fun.rich.display.screens.clickgui.components.implement.settings.TextComponent;
-import fun.rich.display.screens.clickgui.MenuScreen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static kronex.fun.other.utils.display.other.animation.Direction.BACKWARDS;
-import static kronex.fun.other.utils.display.other.animation.Direction.FORWARDS;
+import static fun.rich.common.animation.Direction.BACKWARDS;
+import static fun.rich.common.animation.Direction.FORWARDS;
 
 @Setter
 @Getter
@@ -38,16 +37,16 @@ public class MenuScreen extends Screen implements QuickImports {
     private final UserComponent userComponent = new UserComponent();
     private final SearchComponent searchComponent = new SearchComponent();
     private final CategoryContainerComponent categoryContainerComponent = new CategoryContainerComponent();
-    private final kronex.fun.display.screens.clickgui.components.implement.other.CosmeticsButton cosmeticsButton = new kronex.fun.display.screens.clickgui.components.implement.other.CosmeticsButton();
-    private final ThemeComponent themeComponent = new ThemeComponent();
-    public final Animation animation = new DecelerateAnimation().setMs(200).setValue(1);
+    // private final kronex.fun.display.screens.clickgui.components.implement.other.CosmeticsButton cosmeticsButton = new kronex.fun.display.screens.clickgui.components.implement.other.CosmeticsButton();
+    // private final ThemeComponent themeComponent = new ThemeComponent();
+    public final Animation animation = new Decelerate().setMs(200).setValue(1);
     public ModuleCategory category = ModuleCategory.COMBAT;
     public int x, y, width, height;
     private String hoveredModuleDesc = null;
 
     // Cosmetics panel
     @Getter private boolean cosmeticsOpen = false;
-    @Getter private final CosmeticsPanel cosmeticsPanel = new CosmeticsPanel();
+    // @Getter private final CosmeticsPanel cosmeticsPanel = new CosmeticsPanel();
 
     public void setCosmeticsOpen(boolean open) {
         this.cosmeticsOpen = open;
@@ -101,15 +100,15 @@ public class MenuScreen extends Screen implements QuickImports {
         userComponent.position(x, y + height);
 
         // Кнопка Cosmetics над профилем
-        cosmeticsButton.x = x + 6;
-        cosmeticsButton.y = y + height - 55;
-        cosmeticsButton.width = 73;
-        cosmeticsButton.height = 17;
+        // cosmeticsButton.x = x + 6;
+        // cosmeticsButton.y = y + height - 55;
+        // cosmeticsButton.width = 73;
+        // cosmeticsButton.height = 17;
 
         searchComponent.position(x + 300, y + 6);
         categoryContainerComponent.position(x, y);
 
-        MathUtil.scale(context.getMatrices(), x + (float) width / 2, y + (float) height / 2, getScaleAnimation(), () -> {
+        Calculate.scale(context.getMatrices(), x + (float) width / 2, y + (float) height / 2, getScaleAnimation(), () -> {
             // Рендерим фон, юзера, категории всегда
             backgroundComponent.render(context, mouseX, mouseY, delta);
             userComponent.render(context, mouseX, mouseY, delta);
@@ -118,13 +117,13 @@ public class MenuScreen extends Screen implements QuickImports {
             if (!cosmeticsOpen) {
                 searchComponent.render(context, mouseX, mouseY, delta);
             }
-            cosmeticsButton.render(context, mouseX, mouseY, delta);
+            // cosmeticsButton.render(context, mouseX, mouseY, delta);
             // Рендерим cosmetics панель вместо модулей если открыта
             if (cosmeticsOpen) {
-                cosmeticsPanel.render(context, mouseX, mouseY, delta);
+                // cosmeticsPanel.render(context, mouseX, mouseY, delta);
             } else if (category == ModuleCategory.THEMES) {
-                themeComponent.position(x + 94, y + 38).size(width - 100, height - 48);
-                themeComponent.render(context, mouseX, mouseY, delta);
+                // themeComponent.position(x + 94, y + 38).size(width - 100, height - 48);
+                // themeComponent.render(context, mouseX, mouseY, delta);
             }
             drawClickGuiBind(context);
             windowManager.render(context, mouseX, mouseY, delta);
@@ -146,7 +145,7 @@ public class MenuScreen extends Screen implements QuickImports {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // Клик по виджету бинда ClickGUI
-        if (MathUtil.isHovered(mouseX, mouseY, bindBx, bindBy, bindBw, bindBh)) {
+        if (Calculate.isHovered(mouseX, mouseY, bindBx, bindBy, bindBw, bindBh)) {
             if (button == 0) {
                 bindingGui = !bindingGui;
                 return true;
@@ -161,12 +160,12 @@ public class MenuScreen extends Screen implements QuickImports {
         }
 
         if (!windowManager.mouseClicked(mouseX, mouseY, button)) {
-            cosmeticsButton.mouseClicked(mouseX, mouseY, button);
+            // cosmeticsButton.mouseClicked(mouseX, mouseY, button);
             if (cosmeticsOpen) {
-                cosmeticsPanel.mouseClicked(mouseX, mouseY, button);
+                // cosmeticsPanel.mouseClicked(mouseX, mouseY, button);
                 // Клик по категории закрывает cosmetics
                 components.forEach(component -> component.mouseClicked(mouseX, mouseY, button));
-            } else if (category == ModuleCategory.THEMES && themeComponent.mouseClicked(mouseX, mouseY, button)) {
+            } else if (category == ModuleCategory.THEMES /* && themeComponent.mouseClicked(mouseX, mouseY, button) */) {
                 return true;
             } else {
                 components.forEach(component -> component.mouseClicked(mouseX, mouseY, button));
@@ -194,7 +193,7 @@ public class MenuScreen extends Screen implements QuickImports {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontal, double vertical) {
-        if (cosmeticsOpen && cosmeticsPanel.mouseScrolled(mouseX, mouseY, vertical)) {
+        if (cosmeticsOpen /* && cosmeticsPanel.mouseScrolled(mouseX, mouseY, vertical) */) {
             return true;
         }
         if (!windowManager.mouseScrolled(mouseX, mouseY, vertical)) {
@@ -259,7 +258,7 @@ public class MenuScreen extends Screen implements QuickImports {
     private float bindBx, bindBy, bindBw, bindBh;
 
     private void drawClickGuiBind(DrawContext context) {
-        String bindName = bindingGui ? "..." : StringUtil.getBindName(BindCommand.ClickGuiManager.getClickGuiKey());
+        String bindName = bindingGui ? "..." : StringHelper.getBindName(BindCommand.ClickGuiManager.getClickGuiKey());
 
         float textW = Fonts.getSize(12, Fonts.Type.BOLD).getStringWidth(bindName);
         float totalW = textW + 14f;

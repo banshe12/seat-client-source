@@ -38,7 +38,7 @@ public class UserComponent extends AbstractComponent {
 //        Fonts.getSize(12, Fonts.Type.SEMI).drawGradientString(matrix, "Username", x + 26, y - 21f, ColorUtil.getText(), ColorUtil.getText(0.5F));
 //        scissorManager.pop();
 //
-//        Fonts.getSize(10, Fonts.Type.SEMI).drawGradientString(matrix, StringUtil.getUserRole(), x + 26, y - 14.5f, ColorUtil.fade(0), ColorUtil.fade(300));
+//        Fonts.getSize(10, Fonts.Type.SEMI).drawGradientString(matrix, StringHelper.getUserRole(), x + 26, y - 14.5f, ColorUtil.fade(0), ColorUtil.fade(300));
 //        scissor.pop();
     }
 
