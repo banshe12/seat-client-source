@@ -1,32 +1,33 @@
 package fun.rich.display.screens.clickgui;
 
-import fun.rich.display.screens.clickgui.components.implement.autobuy.autobuyui.AutoBuyGuiComponent;
-import fun.rich.features.impl.misc.SelfDestruct;
+import fun.rich.utils.display.color.ColorAssist;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import fun.rich.features.module.ModuleCategory;
-import fun.rich.common.animation.Easy.Direction;
-import fun.rich.common.animation.Easy.EaseBackIn;
+import fun.rich.common.animation.Animation;
+import fun.rich.common.animation.Direction;
+import fun.rich.utils.display.other.animator.DecelerateAnimation;
 import fun.rich.utils.display.shape.ShapeProperties;
 import fun.rich.utils.client.sound.SoundManager;
 import fun.rich.utils.display.interfaces.QuickImports;
-import fun.rich.display.screens.clickgui.components.AbstractComponent;
-import fun.rich.display.screens.clickgui.components.implement.other.BackgroundComponent;
-import fun.rich.display.screens.clickgui.components.implement.other.CategoryContainerComponent;
-import fun.rich.display.screens.clickgui.components.implement.other.SearchComponent;
-import fun.rich.display.screens.clickgui.components.implement.other.UserComponent;
-import fun.rich.display.screens.clickgui.components.implement.settings.TextComponent;
 import fun.rich.utils.math.calc.Calculate;
+import fun.rich.utils..other.StringUtil;
+import fun.rich.utils.display.font.Fonts;
+import fun.rich.commands.defaults.BindCommand;
+import fun.rich.display.screens.clickgui.components.AbstractComponent;
+import fun.rich.display.screens.clickgui.components.implement.other.*;
+import fun.rich.display.screens.clickgui.components.implement.settings.TextComponent;
+import fun.rich.display.screens.clickgui.MenuScreen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static fun.rich.common.animation.Easy.Direction.BACKWARDS;
-import static fun.rich.common.animation.Easy.Direction.FORWARDS;
+import static kronex.fun.other.utils.display.other.animation.Direction.BACKWARDS;
+import static kronex.fun.other.utils.display.other.animation.Direction.FORWARDS;
 
 @Setter
 @Getter
@@ -37,23 +38,41 @@ public class MenuScreen extends Screen implements QuickImports {
     private final UserComponent userComponent = new UserComponent();
     private final SearchComponent searchComponent = new SearchComponent();
     private final CategoryContainerComponent categoryContainerComponent = new CategoryContainerComponent();
-    private final AutoBuyGuiComponent autoBuyGuiComponent = new AutoBuyGuiComponent();
-    public final EaseBackIn animation = new EaseBackIn(325, 1f, 1.5f);
+    private final kronex.fun.display.screens.clickgui.components.implement.other.CosmeticsButton cosmeticsButton = new kronex.fun.display.screens.clickgui.components.implement.other.CosmeticsButton();
+    private final ThemeComponent themeComponent = new ThemeComponent();
+    public final Animation animation = new DecelerateAnimation().setMs(200).setValue(1);
     public ModuleCategory category = ModuleCategory.COMBAT;
     public int x, y, width, height;
-    private boolean guiDragging = false;
-    private double dragOffsetX, dragOffsetY;
-    private float offsetXPercent = 0.5f;
-    private float offsetYPercent = 0.5f;
-    private int lastScreenWidth = 0;
-    private int lastScreenHeight = 0;
-    private double lastTransformedMouseX = 0;
-    private double lastTransformedMouseY = 0;
+    private String hoveredModuleDesc = null;
+
+    // Cosmetics panel
+    @Getter private boolean cosmeticsOpen = false;
+    @Getter private final CosmeticsPanel cosmeticsPanel = new CosmeticsPanel();
+
+    public void setCosmeticsOpen(boolean open) {
+        this.cosmeticsOpen = open;
+    }
+
+    public void setHoveredModuleDesc(String desc) {
+        this.hoveredModuleDesc = desc;
+    }
+
+    public String getSearchText() {
+        if (searchComponent == null) {
+            return "";
+        }
+        try {
+            Object value = searchComponent.getClass().getMethod("getText").invoke(searchComponent);
+            return value instanceof String string ? string : "";
+        } catch (Throwable ignored) {
+            return "";
+        }
+    }
 
     public void initialize() {
         animation.setDirection(FORWARDS);
         categoryContainerComponent.initializeCategoryComponents();
-        components.addAll(Arrays.asList(backgroundComponent, userComponent, searchComponent, categoryContainerComponent, autoBuyGuiComponent));
+        components.addAll(Arrays.asList(backgroundComponent, userComponent, searchComponent, categoryContainerComponent));
     }
 
     public MenuScreen() {
@@ -68,186 +87,195 @@ public class MenuScreen extends Screen implements QuickImports {
         super.tick();
     }
 
-    private double[] transformMouseCoords(double mouseX, double mouseY) {
-        float scale = getScaleAnimation();
-        if (scale <= 0.01f) scale = 1f;
-        float centerX = x + width / 2f;
-        float centerY = y + height / 2f;
-        double transformedX = (mouseX - centerX) / scale + centerX;
-        double transformedY = (mouseY - centerY) / scale + centerY;
-        return new double[]{transformedX, transformedY};
-    }
-
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        x = window.getScaledWidth() / 2 - 200;
+        y = window.getScaledHeight() / 2 - 125;
         width = 400;
         height = 250;
 
-        int currentWidth = window.getScaledWidth();
-        int currentHeight = window.getScaledHeight();
+        rectangle.render(ShapeProperties.create(context.getMatrices(), 0, 0, window.getScaledWidth(), window.getScaledHeight())
+                .color(ColorAssist.applyOpacity(0xFF000000, 100 * getScaleAnimation())).build());
 
-        if (lastScreenWidth != currentWidth || lastScreenHeight != currentHeight) {
-            if (lastScreenWidth != 0 && lastScreenHeight != 0) {
-                x = (int) (currentWidth * offsetXPercent - width / 2);
-                y = (int) (currentHeight * offsetYPercent - height / 2);
-            } else {
-                x = currentWidth / 2 - 200;
-                y = currentHeight / 2 - 125;
-                offsetXPercent = (x + width / 2f) / currentWidth;
-                offsetYPercent = (y + height / 2f) / currentHeight;
+        backgroundComponent.position(x, y).size(width, height);
+        userComponent.position(x, y + height);
+
+        // Кнопка Cosmetics над профилем
+        cosmeticsButton.x = x + 6;
+        cosmeticsButton.y = y + height - 55;
+        cosmeticsButton.width = 73;
+        cosmeticsButton.height = 17;
+
+        searchComponent.position(x + 300, y + 6);
+        categoryContainerComponent.position(x, y);
+
+        MathUtil.scale(context.getMatrices(), x + (float) width / 2, y + (float) height / 2, getScaleAnimation(), () -> {
+            // Рендерим фон, юзера, категории всегда
+            backgroundComponent.render(context, mouseX, mouseY, delta);
+            userComponent.render(context, mouseX, mouseY, delta);
+            categoryContainerComponent.render(context, mouseX, mouseY, delta);
+            // Поиск только когда cosmetics закрыта
+            if (!cosmeticsOpen) {
+                searchComponent.render(context, mouseX, mouseY, delta);
             }
-            lastScreenWidth = currentWidth;
-            lastScreenHeight = currentHeight;
-        }
-
-        double[] transformed = transformMouseCoords(mouseX, mouseY);
-        lastTransformedMouseX = transformed[0];
-        lastTransformedMouseY = transformed[1];
-
-        rectangle.render(ShapeProperties.create(context.getMatrices(), 0, 0, window.getScaledWidth(), window.getScaledHeight()).color(Calculate.applyOpacity(0xFF000000, 100 * getScaleAnimation())).build());
-        backgroundComponent.position(x - 20, y).size(width + 40, height);
-        autoBuyGuiComponent.position(x - 20, y).size(width + 40, height + 30);
-
-        if (category == ModuleCategory.COMBAT || category == ModuleCategory.MOVEMENT || category == ModuleCategory.RENDER || category == ModuleCategory.PLAYER || category == ModuleCategory.MISC) {
-            searchComponent.position(x + 330, y + 7.5F);
-        } else {
-            searchComponent.position(x + 330, y - 1000f);
-            searchComponent.setText("");
-        }
-        categoryContainerComponent.position(x - 20, y);
-
-        Calculate.scale(context.getMatrices(), x + (float) width / 2, y + (float) height / 2, getScaleAnimation(), () -> {
-            components.forEach(component -> component.render(context, (int)lastTransformedMouseX, (int)lastTransformedMouseY, delta));
-            windowManager.render(context, (int)lastTransformedMouseX, (int)lastTransformedMouseY, delta);
+            cosmeticsButton.render(context, mouseX, mouseY, delta);
+            // Рендерим cosmetics панель вместо модулей если открыта
+            if (cosmeticsOpen) {
+                cosmeticsPanel.render(context, mouseX, mouseY, delta);
+            } else if (category == ModuleCategory.THEMES) {
+                themeComponent.position(x + 94, y + 38).size(width - 100, height - 48);
+                themeComponent.render(context, mouseX, mouseY, delta);
+            }
+            drawClickGuiBind(context);
+            windowManager.render(context, mouseX, mouseY, delta);
         });
         super.render(context, mouseX, mouseY, delta);
     }
 
     public void openGui() {
-        if (SelfDestruct.unhooked) return;
-
         animation.setDirection(Direction.FORWARDS);
-        animation.reset();
         mc.setScreen(this);
         SoundManager.playSound(SoundManager.OPEN_GUI);
     }
 
     public float getScaleAnimation() {
-        return (float) animation.getOutput();
+        return animation.getOutput().floatValue();
     }
+
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        double[] transformed = transformMouseCoords(mouseX, mouseY);
-
-        if (button == 2 && isHoveringBackground(transformed[0], transformed[1])) {
-            guiDragging = true;
-            dragOffsetX = transformed[0] - x;
-            dragOffsetY = transformed[1] - y;
+        // Клик по виджету бинда ClickGUI
+        if (MathUtil.isHovered(mouseX, mouseY, bindBx, bindBy, bindBw, bindBh)) {
+            if (button == 0) {
+                bindingGui = !bindingGui;
+                return true;
+            }
+        } else if (bindingGui && button != 0) {
+            // Правая/средняя кнопка мыши как бинд
+            BindCommand.ClickGuiManager.setClickGuiKey(button);
+            bindingGui = false;
             return true;
+        } else if (bindingGui) {
+            bindingGui = false;
         }
 
-        if (!guiDragging) {
-            boolean windowHandled = windowManager.mouseClicked(transformed[0], transformed[1], button);
-            if (!windowHandled) {
-                for (AbstractComponent component : components) {
-                    component.mouseClicked(transformed[0], transformed[1], button);
-                }
+        if (!windowManager.mouseClicked(mouseX, mouseY, button)) {
+            cosmeticsButton.mouseClicked(mouseX, mouseY, button);
+            if (cosmeticsOpen) {
+                cosmeticsPanel.mouseClicked(mouseX, mouseY, button);
+                // Клик по категории закрывает cosmetics
+                components.forEach(component -> component.mouseClicked(mouseX, mouseY, button));
+            } else if (category == ModuleCategory.THEMES && themeComponent.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            } else {
+                components.forEach(component -> component.mouseClicked(mouseX, mouseY, button));
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        double[] transformed = transformMouseCoords(mouseX, mouseY);
-
-        if (button == 2) {
-            guiDragging = false;
-            offsetXPercent = (x + width / 2f) / window.getScaledWidth();
-            offsetYPercent = (y + height / 2f) / window.getScaledHeight();
-        }
-
-        for (AbstractComponent component : components) {
-            component.mouseReleased(transformed[0], transformed[1], button);
-        }
-        windowManager.mouseReleased(transformed[0], transformed[1], button);
+        components.forEach(component -> component.mouseReleased(mouseX, mouseY, button));
+        windowManager.mouseReleased(mouseX, mouseY, button);
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        double[] transformed = transformMouseCoords(mouseX, mouseY);
-
-        if (guiDragging && button == 2) {
-            x = (int) (transformed[0] - dragOffsetX);
-            y = (int) (transformed[1] - dragOffsetY);
-            return true;
-        }
-
-        boolean windowHandled = windowManager.mouseDragged(transformed[0], transformed[1], button, deltaX, deltaY);
-        if (!windowHandled) {
-            for (AbstractComponent component : components) {
-                component.mouseDragged(transformed[0], transformed[1], button, deltaX, deltaY);
-            }
+        if (!windowManager.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
+            components.forEach(component -> component.mouseDragged(mouseX, mouseY, button, deltaX, deltaY));
         }
         return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
+
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontal, double vertical) {
-        double[] transformed = transformMouseCoords(mouseX, mouseY);
-
-        boolean windowHandled = windowManager.mouseScrolled(transformed[0], transformed[1], vertical);
-        if (!windowHandled) {
-            for (AbstractComponent component : components) {
-                component.mouseScrolled(transformed[0], transformed[1], vertical);
-            }
+        if (cosmeticsOpen && cosmeticsPanel.mouseScrolled(mouseX, mouseY, vertical)) {
+            return true;
+        }
+        if (!windowManager.mouseScrolled(mouseX, mouseY, vertical)) {
+            components.forEach(component -> component.mouseScrolled(mouseX, mouseY, vertical));
         }
         return super.mouseScrolled(mouseX, mouseY, horizontal, vertical);
     }
 
+
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // Если ждём бинд для ClickGUI
+        if (bindingGui) {
+            if (keyCode == 256) { // ESC — отмена
+                bindingGui = false;
+            } else {
+                int key = keyCode == org.lwjgl.glfw.GLFW.GLFW_KEY_DELETE ? -1 : keyCode;
+                BindCommand.ClickGuiManager.setClickGuiKey(key);
+                bindingGui = false;
+            }
+            return true;
+        }
+
         if (keyCode == 256 && shouldCloseOnEsc()) {
             SoundManager.playSound(SoundManager.CLOSE_GUI);
             animation.setDirection(BACKWARDS);
             return true;
         }
+
         if (!windowManager.keyPressed(keyCode, scanCode, modifiers)) {
-            for (AbstractComponent component : components) {
-                component.keyPressed(keyCode, scanCode, modifiers);
-            }
+            components.forEach(component -> component.keyPressed(keyCode, scanCode, modifiers));
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
+
     @Override
     public boolean charTyped(char chr, int modifiers) {
         if (!windowManager.charTyped(chr, modifiers)) {
-            for (AbstractComponent component : components) {
-                component.charTyped(chr, modifiers);
-            }
+            components.forEach(component -> component.charTyped(chr, modifiers));
         }
         return super.charTyped(chr, modifiers);
     }
+
 
     @Override
     public boolean shouldPause() {
         return false;
     }
 
+
     @Override
     public void close() {
-        if (animation.finished(BACKWARDS)) {
+        if (animation.isFinished(BACKWARDS)) {
             TextComponent.typing = false;
-            SearchComponent.typing = false;
             super.close();
         }
     }
 
-    private boolean isHoveringBackground(double mouseX, double mouseY) {
-        return mouseX >= x - 20 && mouseX <= x + width + 20 &&
-                mouseY >= y && mouseY <= y + height;
+    // --- ClickGUI bind widget ---
+    private boolean bindingGui = false;
+    private float bindBx, bindBy, bindBw, bindBh;
+
+    private void drawClickGuiBind(DrawContext context) {
+        String bindName = bindingGui ? "..." : StringUtil.getBindName(BindCommand.ClickGuiManager.getClickGuiKey());
+
+        float textW = Fonts.getSize(12, Fonts.Type.BOLD).getStringWidth(bindName);
+        float totalW = textW + 14f;
+        float bh = 15f;
+        float bx = x + 298 - totalW - 4;
+        float by = y + 6;
+
+        bindBx = bx; bindBy = by; bindBw = totalW; bindBh = bh;
+
+        rectangle.render(ShapeProperties.create(context.getMatrices(), bx, by, totalW, bh)
+                .round(2.5F).thickness(2).softness(0.5F)
+                .outlineColor(ColorAssist.getOutline())
+                .color(ColorAssist.getGuiRectColor(0.5F)).build());
+
+        float textY = by + 1f;
+        Fonts.getSize(12, Fonts.Type.BOLD).drawString(context.getMatrices(), bindName,
+                bx + 7, by + 5.5f, 0xFFFFFFFF);
     }
 }
