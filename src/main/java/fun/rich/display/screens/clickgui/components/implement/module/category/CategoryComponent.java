@@ -1,6 +1,5 @@
 package fun.rich.display.screens.clickgui.components.implement.module.category;
 
-
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
@@ -9,17 +8,17 @@ import fun.rich.features.module.Module;
 import fun.rich.features.module.ModuleCategory;
 import fun.rich.common.animation.Animation;
 import fun.rich.common.animation.Direction;
-import fun.rich.common.animation.implement.InOutBack;
+import fun.rich.common.animation.implement.Decelerate;
 import fun.rich.utils.display.font.Fonts;
 import fun.rich.utils.display.shape.ShapeProperties;
-import fun.rich.display.screens.clickgui.components.implement.module.ModuleComponent;
 import fun.rich.utils.display.color.ColorAssist;
 import fun.rich.utils.math.calc.Calculate;
 import fun.rich.utils.display.scissor.ScissorAssist;
 import fun.rich.Rich;
 import fun.rich.display.screens.clickgui.MenuScreen;
 import fun.rich.display.screens.clickgui.components.AbstractComponent;
-import java.awt.*;
+import fun.rich.display.screens.clickgui.components.implement.module.ModuleComponent;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,173 +28,105 @@ public class CategoryComponent extends AbstractComponent {
     private final List<ModuleComponent> moduleComponents = new ArrayList<>();
     private static final Set<ModuleComponent> globalModuleComponents = new HashSet<>();
     private final ModuleCategory category;
-    private final Animation alphaAnimation = new InOutBack().setMs(300).setValue(1);
-    private final Animation scaleAnimation = new InOutBack().setMs(300).setValue(1);
-    private boolean initializedAnimations = false;
+
+    private final Animation alphaAnimation = new Decelerate().setMs(300).setValue(1);
     private float scroll = 0;
     private float smoothedScroll = 0;
 
-    private void initializeModules() {
+
+    private void initialize() {
         List<Module> modules = Rich.getInstance()
                 .getModuleRepository()
                 .modules();
+
         for (Module module : modules) {
             ModuleComponent newComponent = new ModuleComponent(module);
+
             if (globalModuleComponents.add(newComponent)) {
                 moduleComponents.add(newComponent);
             }
         }
     }
 
-    public void postInitialize() {
-        if (!initializedAnimations) {
-            if (MenuScreen.INSTANCE.getCategory().equals(category)) {
-                alphaAnimation.setDirection(Direction.FORWARDS);
-                scaleAnimation.setDirection(Direction.FORWARDS);
-                alphaAnimation.reset();
-                scaleAnimation.reset();
-                alphaAnimation.setMs(0);
-                scaleAnimation.setMs(0);
-            } else {
-                alphaAnimation.setDirection(Direction.BACKWARDS);
-                scaleAnimation.setDirection(Direction.BACKWARDS);
-                alphaAnimation.reset();
-                scaleAnimation.reset();
-                alphaAnimation.setMs(0);
-                scaleAnimation.setMs(0);
-            }
-            initializedAnimations = true;
-        }
-    }
-
     public CategoryComponent(ModuleCategory category) {
         this.category = category;
-        initializeModules();
+        initialize();
     }
+
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        postInitialize();
         MenuScreen menuScreen = MenuScreen.INSTANCE;
         globalModuleComponents.clear();
         Matrix4f positionMatrix = context.getMatrices().peek().getPositionMatrix();
         ScissorAssist scissorManager = Rich.getInstance().getScissorManager();
-        drawCategoryTab(context, context.getMatrices(), mouseX, mouseY);
+
+        drawCategoryTab(context, context.getMatrices());
+
         int[] offsets = calculateOffsets();
-        int columnWidth = 142;
+        int columnWidth = 137;
         int column = 0;
         int maxScroll = 0;
-        float offsetX = 35, offsetY = 14;
-        scissorManager.push(positionMatrix, menuScreen.x + offsetX - 75, menuScreen.y + offsetY + 15, menuScreen.width - offsetX + 150, menuScreen.height - offsetY - 15);
+        float offsetX = 84, offsetY = 29;
+        scissorManager.push(positionMatrix, menuScreen.x + offsetX, menuScreen.y + offsetY, menuScreen.width - offsetX, menuScreen.height - offsetY - 1);
         for (int i = moduleComponents.size() - 1; i >= 0; i--) {
             ModuleComponent component = moduleComponents.get(i);
+
             if (shouldRenderComponent(component)) {
                 int componentHeight = component.getComponentHeight() + 9;
-                component.x = menuScreen.x + 32 + (column * (columnWidth + 48));
-                component.y = (float) (menuScreen.y + 35 + offsets[column] - componentHeight + smoothedScroll);
-                component.width = columnWidth + 40;
-                if (component.y > menuScreen.y - componentHeight && menuScreen.y + menuScreen.height + 15 > component.y) {
+
+                component.x = menuScreen.x + 95 + (column * (columnWidth + 10));
+                component.y = (float) (menuScreen.y + 39 + offsets[column] - componentHeight + smoothedScroll);
+                component.width = columnWidth;
+
+                if (component.y > menuScreen.y - componentHeight && menuScreen.y + menuScreen.height + 5 > component.y) {
                     component.render(context, mouseX, mouseY, delta);
                 }
+
                 offsets[column] -= componentHeight;
                 maxScroll = Math.max(maxScroll, offsets[column]);
+
                 column = (column + 1) % 2;
             }
         }
         scissorManager.pop();
-        int clamped = MathHelper.clamp(maxScroll - (menuScreen.height / 2 + 35), 0, maxScroll);
+        int clamped = MathHelper.clamp(maxScroll - (menuScreen.height / 2 - 80), 0, maxScroll);
         scroll = MathHelper.clamp(scroll, -clamped, 0);
         smoothedScroll = Calculate.interpolateSmooth(2, smoothedScroll, scroll);
-
-        if (clamped > 0) {
-            float scrollbarWidth = 4;
-            float scrollbarX = menuScreen.x + menuScreen.width - offsetX - scrollbarWidth + 50;
-            float scrollbarY = menuScreen.y + offsetY + 22;
-            float scrollbarHeight = menuScreen.height - offsetY * 2 - 14;
-
-            rectangle.render(ShapeProperties.create(context.getMatrices(), scrollbarX, scrollbarY, scrollbarWidth, scrollbarHeight)
-                    .round(2F)
-                    .color(
-                            new Color(35, 35, 35, 75).getRGB(),
-                            new Color(45, 45, 45, 95).getRGB(),
-                            new Color(45, 45, 45, 95).getRGB(),
-                            new Color(35, 35, 35, 75).getRGB())
-                    .build());
-
-            float contentHeight = clamped;
-            float viewHeight = menuScreen.height - offsetY * 2;
-            float handleHeight = Math.max(20, viewHeight * (viewHeight / (contentHeight + viewHeight)));
-            float scrollRatio = (float) (-smoothedScroll) / contentHeight;
-            float handleY = scrollbarY + (scrollbarHeight - handleHeight) * scrollRatio;
-
-            rectangle.render(ShapeProperties.create(context.getMatrices(), scrollbarX, handleY, scrollbarWidth, handleHeight)
-                    .round(2F)
-                    .color(
-                            new Color(138, 43, 226, 175).getRGB(),
-                            new Color(138, 43, 226, 255).getRGB(),
-                            new Color(138, 43, 226, 255).getRGB(),
-                            new Color(138, 43, 226, 175).getRGB())
-                    .build());
-        }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         MenuScreen menuScreen = MenuScreen.INSTANCE;
-        float scale = 0.5f + (scaleAnimation.getOutput().floatValue() * 0.5f);
-        float baseWidth = 20;
-        float baseHeight = 20;
-        float scaledWidth = baseWidth * scale;
-        float scaledHeight = baseHeight * scale;
-        float baseX = ModuleCategory.RENDER.equals(category) ? x + 4.65f : ModuleCategory.MOVEMENT.equals(category) ? x + 4.75f : x + 5.25f;
-        float baseY = y;
-        float centerX = baseX + baseWidth / 2;
-        float centerY = baseY + baseHeight / 2;
-        float scaledX = centerX - scaledWidth / 2;
-        float scaledY = centerY - scaledHeight / 2;
-        float hoverX = ModuleCategory.RENDER.equals(category) ? x + 4.65f : ModuleCategory.MOVEMENT.equals(category) ? x + 4.75f : x + 5.25f;
-        float hoverY = y;
-        if (Calculate.isHovered(mouseX, mouseY, hoverX, hoverY, baseWidth, baseHeight) && button == 0) {
+        if (Calculate.isHovered(mouseX, mouseY, x, y, width, height) && button == 0) {
             MenuScreen.INSTANCE.setCategory(category);
-            alphaAnimation.setMs(300);
-            scaleAnimation.setMs(300);
-            alphaAnimation.setDirection(Direction.FORWARDS);
-            scaleAnimation.setDirection(Direction.FORWARDS);
-            return true;
+            // Закрываем cosmetics при смене категории
+            MenuScreen.INSTANCE.setCosmeticsOpen(false);
         }
-        float offsetX = 35, offsetY = 14;
-        if (Calculate.isHovered(mouseX, mouseY, menuScreen.x + offsetX - 75, menuScreen.y + offsetY, menuScreen.width - offsetX + 150, menuScreen.height - offsetY + 15)) {
-            for (int i = 0; i < moduleComponents.size(); i++) {
-                ModuleComponent moduleComponent = moduleComponents.get(i);
-                if (shouldRenderComponent(moduleComponent) && moduleComponent.isHover(mouseX, mouseY)) {
-                    return moduleComponent.mouseClicked(mouseX, mouseY, button);
-                }
+
+        float offsetX = 84, offsetY = 29;
+        if (Calculate.isHovered(mouseX, mouseY, menuScreen.x + offsetX, menuScreen.y + offsetY, menuScreen.width - offsetX, menuScreen.height - offsetY)) {
+            boolean isAnyComponentHovered = moduleComponents.stream()
+                    .anyMatch(moduleComponent -> moduleComponent.isHover(mouseX, mouseY));
+
+            if (isAnyComponentHovered) {
+                moduleComponents.forEach(moduleComponent -> {
+                    if (shouldRenderComponent(moduleComponent) && moduleComponent.isHover(mouseX, mouseY)) {
+                        moduleComponent.mouseClicked(mouseX, mouseY, button);
+                    }
+                });
+                return super.mouseClicked(mouseX, mouseY, button);
             }
+
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+
     @Override
     public boolean isHover(double mouseX, double mouseY) {
-        float scale = 0.5f + (scaleAnimation.getOutput().floatValue() * 0.5f);
-        float baseWidth = 20;
-        float baseHeight = 20;
-        float scaledWidth = baseWidth * scale;
-        float scaledHeight = baseHeight * scale;
-        float baseX = ModuleCategory.RENDER.equals(category) ? x + 4.65f : ModuleCategory.MOVEMENT.equals(category) ? x + 4.75f : x + 5.25f;
-        float baseY = y;
-        float centerX = baseX + baseWidth / 2;
-        float centerY = baseY + baseHeight / 2;
-        float scaledX = centerX - scaledWidth / 2;
-        float scaledY = centerY - scaledHeight / 2;
-
-        boolean isHovered = Calculate.isHovered(mouseX, mouseY, scaledX, scaledY, scaledWidth, scaledHeight);
-
-        if (isHovered) {
-            return true;
-        }
-
         moduleComponents.forEach(moduleComponent -> moduleComponent.isHover(mouseX, mouseY));
+
         for (ModuleComponent moduleComponent : moduleComponents) {
             if (moduleComponent.isHover(mouseX, mouseY)) {
                 return true;
@@ -203,6 +134,7 @@ public class CategoryComponent extends AbstractComponent {
         }
         return super.isHover(mouseX, mouseY);
     }
+
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
@@ -213,10 +145,16 @@ public class CategoryComponent extends AbstractComponent {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         MenuScreen menuScreen = MenuScreen.INSTANCE;
-        float offsetX = 35, offsetY = 13;
-        if (Calculate.isHovered(mouseX, mouseY, menuScreen.x + offsetX, menuScreen.y + offsetY, menuScreen.width - offsetX + 7, menuScreen.height - offsetY + 15)) {
-            scroll += amount * 20;
+        float offsetX = 84, offsetY = 29;
+        boolean overPanel = Calculate.isHovered(mouseX, mouseY, menuScreen.x + offsetX, menuScreen.y + offsetY, menuScreen.width - offsetX, menuScreen.height - offsetY);
+        // When search is active, allow scrolling from anywhere in the GUI
+        boolean searchActive = !menuScreen.getSearchText().isEmpty();
+        boolean overGui = Calculate.isHovered(mouseX, mouseY, menuScreen.x, menuScreen.y, menuScreen.width, menuScreen.height);
+
+        if (overPanel || (searchActive && overGui)) {
+            scroll += (float) (amount * 20);
         }
+
         moduleComponents.forEach(moduleComponent -> {
             if (shouldRenderComponent(moduleComponent)) {
                 moduleComponent.mouseScrolled(mouseX, mouseY, amount);
@@ -224,6 +162,7 @@ public class CategoryComponent extends AbstractComponent {
         });
         return super.mouseScrolled(mouseX, mouseY, amount);
     }
+
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
@@ -235,6 +174,7 @@ public class CategoryComponent extends AbstractComponent {
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
+
     @Override
     public boolean charTyped(char chr, int modifiers) {
         moduleComponents.forEach(moduleComponent -> {
@@ -245,64 +185,28 @@ public class CategoryComponent extends AbstractComponent {
         return super.charTyped(chr, modifiers);
     }
 
-    private void drawCategoryTab(DrawContext context, MatrixStack matrix, int mouseX, int mouseY) {
-        alphaAnimation.setDirection(MenuScreen.INSTANCE.getCategory().equals(category) ? Direction.FORWARDS : Direction.BACKWARDS);
-        scaleAnimation.setDirection(MenuScreen.INSTANCE.getCategory().equals(category) ? Direction.FORWARDS : Direction.BACKWARDS);
+
+    private void drawCategoryTab(DrawContext context, MatrixStack matrix) {
+        boolean selected = MenuScreen.INSTANCE.getCategory().equals(category) && !MenuScreen.INSTANCE.isCosmeticsOpen();
+        alphaAnimation.setDirection(selected ? Direction.FORWARDS : Direction.BACKWARDS);
+
         float anim = alphaAnimation.getOutput().floatValue();
-        float scale = 0.5f + (scaleAnimation.getOutput().floatValue() * 0.5f);
-        int alpha = MathHelper.clamp((int) (anim * 135), 0, 135);
-        float baseWidth = 20;
-        float baseHeight = 20;
-        float scaledWidth = baseWidth * scale;
-        float scaledHeight = baseHeight * scale;
-        float baseX = ModuleCategory.RENDER.equals(category) ? x + 4.65f : ModuleCategory.MOVEMENT.equals(category) ? x + 4.75f : x + 5.25f;
-        float baseY = y;
-        float centerX = baseX + baseWidth / 2;
-        float centerY = baseY + baseHeight / 2;
-        float scaledX = centerX - scaledWidth / 2;
-        float scaledY = centerY - scaledHeight / 2;
-        float hoverX = ModuleCategory.RENDER.equals(category) ? x + 4.65f : ModuleCategory.MOVEMENT.equals(category) ? x + 4.75f : x + 5.25f;
-        float hoverY = y;
+        int selectColor = selected ? ColorAssist.getClientColor() : ColorAssist.getText();
 
-        if (!MenuScreen.INSTANCE.getCategory().equals(category) && Calculate.isHovered(mouseX, mouseY, hoverX, hoverY, baseWidth, baseHeight)) {
-            rectangle.render(ShapeProperties.create(matrix, hoverX, hoverY, baseWidth, baseHeight)
-                    .round(4F)
-                    .color(new Color(138, 43, 226, 100).getRGB(),
-                            new Color(138, 43, 226, 150).getRGB(),
-                            new Color(138, 43, 226, 100).getRGB(),
-                            new Color(138, 43, 226, 150).getRGB()).build());
+        if (anim != 0) {
+            int outlineColor = selected ? ColorAssist.getClientColor() : ColorAssist.getClientColor(anim);
+            int bgColor = selected ? ColorAssist.applyOpacity(ColorAssist.getClientColor(), 40)
+                    : ColorAssist.getGuiRectColor2(anim / 2);
+            rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(2.25F).thickness(2)
+                    .outlineColor(outlineColor).color(bgColor).build());
         }
 
-        rectangle.render(ShapeProperties.create(matrix, scaledX, scaledY, scaledWidth, scaledHeight)
-                .round(5F)
-                .color(new Color(138, 43, 226, alpha).getRGB(),
-                        new Color(138, 43, 226, alpha + 20).getRGB(),
-                        new Color(138, 43, 226, alpha + 20).getRGB(),
-                        new Color(138, 43, 226, alpha).getRGB()).build());
+        String texture = "textures/gui/categories/" + category.getTextureName() + ".png";
+        image.setTexture(texture).render(ShapeProperties.create(matrix, x + 7, y + 4.5F, 8, 8).color(selectColor).build());
 
-
-        if (ModuleCategory.COMBAT.equals(category)) {
-            Fonts.getSize(21, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "A", x + 16f, y + 8.5f, new Color(255, 255, 255, 255).getRGB());
-        }
-        if (ModuleCategory.MOVEMENT.equals(category)) {
-            Fonts.getSize(23, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "B", x + 15f, y + 7.5f, new Color(255, 255, 255, 255).getRGB());
-        }
-        if (ModuleCategory.RENDER.equals(category)) {
-            Fonts.getSize(21, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "C", x + 15f, y + 7.5f, new Color(255, 255, 255, 255).getRGB());
-        }
-        if (ModuleCategory.PLAYER.equals(category)) {
-            Fonts.getSize(23, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "D", x + 15f, y + 7.5f, new Color(255, 255, 255, 255).getRGB());
-        }
-        if (ModuleCategory.MISC.equals(category)) {
-            Fonts.getSize(21, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "E", x + 15.5f, y + 7.5f, new Color(255, 255, 255, 255).getRGB());
-        }
-        if (ModuleCategory.CONFIGS.equals(category)) {
-            Fonts.getSize(21, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "F", x + 15.5f, y + 7.5f, new Color(255, 255, 255, 255).getRGB());
-        }
-        if (ModuleCategory.AUTOBUY.equals(category)) {
-            Fonts.getSize(33, Fonts.Type.ICONSCATEGORY).drawCenteredString(context.getMatrices(), "H", x + 15.5f, y + 4f, new Color(255, 255, 255, 255).getRGB());
-        }
+        Fonts.getSize(14, Fonts.Type.BOLD).drawString(context.getMatrices(), category.getReadableName(), (int) (x + 22), y + 7, selectColor);
     }
+
 
     private int[] calculateOffsets() {
         int[] offsets = new int[2];
@@ -321,7 +225,7 @@ public class CategoryComponent extends AbstractComponent {
     private boolean shouldRenderComponent(ModuleComponent component) {
         MenuScreen menuScreen = MenuScreen.INSTANCE;
         ModuleCategory moduleCategory = component.getModule().getCategory();
-        String text = menuScreen.getSearchComponent().getText().toLowerCase();
+        String text = menuScreen.getSearchText().toLowerCase();
         String moduleName = component.getModule().getVisibleName().toLowerCase();
         return (text.equalsIgnoreCase("") ? moduleCategory.equals(menuScreen.getCategory()) : moduleName.contains(text));
     }

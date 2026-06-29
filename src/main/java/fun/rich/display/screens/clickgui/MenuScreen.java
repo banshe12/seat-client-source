@@ -57,15 +57,7 @@ public class MenuScreen extends Screen implements QuickImports {
     }
 
     public String getSearchText() {
-        if (searchComponent == null) {
-            return "";
-        }
-        try {
-            Object value = searchComponent.getClass().getMethod("getText").invoke(searchComponent);
-            return value instanceof String string ? string : "";
-        } catch (Throwable ignored) {
-            return "";
-        }
+        return searchComponent == null ? "" : searchComponent.getText();
     }
 
     public void initialize() {
