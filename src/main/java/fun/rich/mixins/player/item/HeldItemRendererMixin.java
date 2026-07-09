@@ -7,6 +7,9 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import fun.rich.features.impl.render.ShaderHand;
+import fun.rich.utils.client.Instance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
@@ -24,6 +27,24 @@ public abstract class HeldItemRendererMixin {
     private void renderFirstPersonItemHook(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack stack, float equipProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         HandOffsetEvent event = new HandOffsetEvent(matrices, stack, hand);
         EventManager.callEvent(event);
+
+        ShaderHand shaderHand = Instance.get(ShaderHand.class);
+        if (shaderHand != null && shaderHand.isState()) {
+            int color = shaderHand.getColor();
+            float r = ((color >> 16) & 0xFF) / 255.0f;
+            float g = ((color >> 8) & 0xFF) / 255.0f;
+            float b = (color & 0xFF) / 255.0f;
+            float a = ((color >> 24) & 0xFF) / 255.0f;
+            RenderSystem.setShaderColor(r, g, b, a);
+        }
+    }
+
+    @Inject(method = "renderFirstPersonItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;pop()V", shift = At.Shift.BEFORE))
+    private void renderFirstPersonItemPopHook(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack stack, float equipProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
+        ShaderHand shaderHand = Instance.get(ShaderHand.class);
+        if (shaderHand != null && shaderHand.isState()) {
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        }
     }
 
     @WrapOperation(method = "renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/network/ClientPlayerEntity;I)V",
