@@ -31,7 +31,7 @@ public class CategoryContainerComponent extends AbstractComponent {
 
         for (CategoryComponent component : categoryComponents) {
             component.x = x + 6;
-            component.y = y + 40 + offset;
+            component.y = y + 55 + offset;
             component.width = 73;
             component.height = 17;
             component.render(context, mouseX, mouseY, delta);

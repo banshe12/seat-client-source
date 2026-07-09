@@ -72,19 +72,16 @@ public class BackgroundComponent extends AbstractComponent {
         DiscordManager discord = Rich.getInstance().getDiscordManager();
         Rich.getInstance().getScissorManager().push(matrix.peek().getPositionMatrix(), 0, 0, window.getScaledWidth(), window.getScaledHeight());
 
-        blur.render(ShapeProperties.create(matrix, x, y, width, height).round(8).quality(64)
-                .color(new Color(0, 0, 0, 200).getRGB())
+        blur.render(ShapeProperties.create(matrix, x, y, width, height).round(12).quality(64)
+                .color(new Color(10, 10, 10, 210).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(8)
+        rectangle.render(ShapeProperties.create(matrix, x, y, width, height).round(12)
                 .softness(22)
-                        .thickness(0.1f)
-                        .outlineColor(new Color(18, 19, 20, 225).getRGB())
+                        .thickness(1.0f)
+                        .outlineColor(new Color(138, 43, 226, 200).getRGB())
                 .color(
-                new Color(18, 19, 20, 175).getRGB(),
-                new Color(0, 2, 5, 175).getRGB(),
-                new Color(0, 2, 5, 175).getRGB(),
-                new Color(18, 19, 20, 175).getRGB())
+                new Color(10, 10, 10, 210).getRGB())
                 .build());
 
         List<Map<String, Object>> displayedConfigs = new ArrayList<>();
@@ -378,23 +375,19 @@ public class BackgroundComponent extends AbstractComponent {
         rectangle.render(ShapeProperties.create(context.getMatrices(), x + 43F, y + 28, width - 43F, 0.5F)
                 .color(new Color(55, 55, 70, 250).getRGB(), new Color(55, 55, 70, 15).getRGB(), new Color(55, 55, 70, 250).getRGB(), new Color(55, 55, 70, 15).getRGB()).build());
 
-        blur.render(ShapeProperties.create(matrix, x + 10.5f, y + 10f, 20, 20).round(5).quality(64)
+        blur.render(ShapeProperties.create(matrix, x + 10.5f, y + 10f, 30, 30).round(8).quality(64)
                 .color(new Color(0, 0, 0, 200).getRGB())
                 .build());
 
-        rectangle.render(ShapeProperties.create(matrix, x + 10.5f, y + 10f, 20, 20).round(5)
-                .softness(22)
-                .thickness(0.1f)
-                .outlineColor(new Color(18, 19, 20, 225).getRGB())
-                .color(
-                        new Color(18, 19, 20, 175).getRGB(),
-                        new Color(0, 2, 5, 175).getRGB(),
-                        new Color(0, 2, 5, 175).getRGB(),
-                        new Color(18, 19, 20, 175).getRGB())
+        rectangle.render(ShapeProperties.create(matrix, x + 10.5f, y + 10f, 30, 30).round(8)
+                .softness(2)
+                .thickness(1.0f)
+                .outlineColor(new Color(138, 43, 226, 255).getRGB())
+                .color(new Color(20, 20, 20, 255).getRGB())
                 .build());
 
 
-        Fonts.getSize(26, Fonts.Type.ICONS).drawString(matrix, "A ", x + 14f, y + 15F, new Color(225, 225, 255, 255).getRGB());
+        Render2D.drawTexture(context, Identifier.of("minecraft", "textures/logo.png"), x + 13f, y + 13F, 25, 25);
 
         String icon;
         switch (MenuScreen.INSTANCE.getCategory()) {
