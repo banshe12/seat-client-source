@@ -89,13 +89,13 @@ public class MenuScreen extends Screen implements QuickImports {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        x = window.getScaledWidth() / 2 - 200;
-        y = window.getScaledHeight() / 2 - 125;
-        width = 400;
-        height = 250;
+        x = window.getScaledWidth() / 2 - 225;
+        y = window.getScaledHeight() / 2 - 140;
+        width = 450;
+        height = 280;
 
         rectangle.render(ShapeProperties.create(context.getMatrices(), 0, 0, window.getScaledWidth(), window.getScaledHeight())
-                .color(ColorAssist.applyOpacity(0xFF000000, 100 * getScaleAnimation())).build());
+                .color(ColorAssist.applyOpacity(0xFF000000, 150 * getScaleAnimation())).build());
 
         backgroundComponent.position(x, y).size(width, height);
         userComponent.position(x, y + height);
@@ -106,7 +106,7 @@ public class MenuScreen extends Screen implements QuickImports {
         cosmeticsButton.width = 73;
         cosmeticsButton.height = 17;
 
-        searchComponent.position(x + 300, y + 6);
+        searchComponent.position(x + width - 100, y + 15);
         categoryContainerComponent.position(x, y);
 
         MathUtil.scale(context.getMatrices(), x + (float) width / 2, y + (float) height / 2, getScaleAnimation(), () -> {

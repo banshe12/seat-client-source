@@ -99,7 +99,10 @@ public class ModuleRepository {
                 new SuperFireWork(),
                 new Spider(),
                 new ServerRPSpoofer(),
-                new KillEffect()
+                new KillEffect(),
+                new ShaderHand(),
+                new EventWaypoint(),
+                new AncientXray()
         );
     }
 

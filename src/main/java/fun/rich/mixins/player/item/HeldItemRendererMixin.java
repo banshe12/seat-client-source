@@ -1,5 +1,6 @@
 package fun.rich.mixins.player.item;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -32,6 +33,7 @@ public abstract class HeldItemRendererMixin {
         ItemRendererEvent event = new ItemRendererEvent(player, item, hand);
         EventManager.callEvent(event);
         original.call(instance, event.getPlayer(), tickDelta, pitch, event.getHand(), swingProgress, event.getStack(), equipProgress, matrices, vertexConsumers, light);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     @WrapOperation(method = "renderFirstPersonItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;swingArm(FFLnet/minecraft/client/util/math/MatrixStack;ILnet/minecraft/util/Arm;)V", ordinal = 2))
